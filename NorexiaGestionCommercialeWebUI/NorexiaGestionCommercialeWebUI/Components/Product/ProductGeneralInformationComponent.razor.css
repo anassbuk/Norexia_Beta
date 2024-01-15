@@ -1,0 +1,34 @@
+﻿
+::deep .control_wrapper {
+    width: 450px;
+    margin: auto;
+}
+
+::deep .e-upload-icon {
+    align-items: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    font-size: 11px;
+    -ms-flex-pack: center;
+    padding: 18px;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+}
+
+::deep .uploader-file-name {
+    margin-right: 18px;
+    display: block;
+}
+
+::deep .upload-image {
+    width: 150px;
+    display: inline-flex;
+    background-size: contain;
+    margin: 7px;
+    text-align: center;
+    line-height: 10;
+    border-radius: 5px;
+}

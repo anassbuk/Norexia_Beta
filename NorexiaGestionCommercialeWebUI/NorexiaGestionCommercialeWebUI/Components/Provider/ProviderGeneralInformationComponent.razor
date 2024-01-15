@@ -1,0 +1,37 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <div class="switch-control mt-2">
+            <SfRadioButton Label="Particulier" Name="ProviderType" Value=@ProviderType.Particular.ToString() @bind-Checked="@ProviderCommand!.ProviderType" @onchange="OnProviderTypeChange"></SfRadioButton>
+            <SfRadioButton Label="Société" Name="ProviderType" Value=@ProviderType.Company.ToString() @bind-Checked="@ProviderCommand!.ProviderType" @onchange="OnProviderTypeChange"></SfRadioButton>
+        </div>
+
+        <ValidationMessage For="@(() => ProviderCommand!.ProviderType)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.Reference)"></ValidationMessage>
+    </div>
+    @if (ProviderCommand!.ProviderType == ProviderType.Company)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=ProviderCommand!.SocialReason Placeholder='Raison social' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => ProviderCommand!.SocialReason)"></ValidationMessage>
+        </div>
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=ProviderCommand!.ICE Placeholder='ICE' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => ProviderCommand!.ICE)"></ValidationMessage>
+        </div>
+    }
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList TValue="Guid?" Placeholder="Catégorie" TItem="ProviderCategoryDto" @bind-Value="@ProviderCommand!.ProviderCategoryId" DataSource="@ProviderCategories" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => ProviderCommand!.ProviderCategoryId)"></ValidationMessage>
+    </div>
+</div>

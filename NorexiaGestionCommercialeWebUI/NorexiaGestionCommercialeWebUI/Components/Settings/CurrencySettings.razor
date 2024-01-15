@@ -1,0 +1,47 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Currency;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+
+<h2 class="section-header">Gestion Devise</h2>
+
+<div class="row m-auto">
+    <div class="form-group col-auto m-1 p-1">
+        <EditForm EditContext="EC">
+            <FluentValidator TValidator="CurrencyDtoValidator"></FluentValidator>
+            <SfTextBox @bind-Value=DefaultCurrency!.Name Placeholder="Devise par défaut" FloatLabelType="@FloatLabelType.Auto" @onchange="DefaultCurrencyValueChanged">
+            </SfTextBox>
+            <ValidationMessage For="@(() => DefaultCurrency!.Name)" />
+        </EditForm>
+    </div>
+</div>
+
+<SfGrid DataSource="@Currencies" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog">
+        <Template>
+            @{
+                <FluentValidator TValidator="CurrencyDtoValidator"></FluentValidator>
+                var currency = (context as CurrencyDto);
+                <div>
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <SfTextBox @bind-Value=currency!.Name Placeholder="Devise" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            <ValidationMessage For="@(()=>currency!.Name)"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="validation-message">@DialogValidationMessage</div>
+                </div>
+            }
+        </Template>
+    </GridEditSettings>
+    <GridEvents OnActionBegin="OnCurrencyActionBegin" TValue="CurrencyDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(CurrencyDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(CurrencyDto.Name) HeaderText="Devise">
+        </GridColumn>
+    </GridColumns>
+</SfGrid>
+

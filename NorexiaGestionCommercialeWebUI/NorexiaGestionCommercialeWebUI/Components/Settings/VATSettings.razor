@@ -1,0 +1,54 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.VAT;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+
+<h2 class="section-header">Gestion TVA</h2>
+
+<div class="row m-auto">
+    <div class="form-group col-auto m-1 p-1">
+        <EditForm EditContext="EC">
+            <FluentValidator TValidator="VATDtoValidator"></FluentValidator>
+            <SfNumericTextBox @bind-Value=DefaultVAT!.Value TValue=decimal? Min=0 Max=1 Step=0.01m Format="p2" Placeholder="TVA par défaut" FloatLabelType="@FloatLabelType.Auto">
+
+                <NumericTextBoxEvents ValueChange="DefaultVATValueChanged" TValue="decimal?"></NumericTextBoxEvents>
+            </SfNumericTextBox>
+            <ValidationMessage For="@(() => DefaultVAT.Value)" />
+        </EditForm>
+    </div>
+</div>
+
+<SfGrid DataSource="@VATs" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog">
+        <Template>
+            @{
+                <FluentValidator TValidator="VATDtoValidator"></FluentValidator>
+                var vat = (context as VATDto);
+                <div>
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <SfNumericTextBox @bind-Value=vat!.Value TValue=decimal? Min=0 Max=1 Step=0.01m Format="p2" Placeholder="TVA" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+                            <ValidationMessage For="@(()=>vat!.Value)"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="validation-message">@DialogValidationMessage</div>
+                </div>
+            }
+        </Template>
+    </GridEditSettings>
+    <GridEvents OnActionBegin="OnVatActionBegin" TValue="VATDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(VATDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(VATDto.Value) HeaderText="TVA">
+            <Template>
+                @{
+                    var val = (context as VATDto)!.Value ?? 0;
+                    <div>@val.ToString("P2")</div>
+                }
+            </Template>
+        </GridColumn>
+    </GridColumns>
+</SfGrid>

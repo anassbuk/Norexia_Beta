@@ -1,0 +1,31 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Components.Delivery.Deliverer
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Deliverer;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Deliverers/{Id:guid}"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="DelivererDtoValidator" />
+    <DelivererAppBarComponent></DelivererAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <ValidationSummary></ValidationSummary>
+                        <DelivererGeneralInformationComponent @bind-Deliverer=Deliverer></DelivererGeneralInformationComponent>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

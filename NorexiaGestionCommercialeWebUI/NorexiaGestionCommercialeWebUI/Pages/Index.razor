@@ -1,0 +1,46 @@
+﻿@page "/"
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+
+<SfAppBar ColorMode="AppBarColor.Light">
+    <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Home"></SfButton>
+    <SfDropDownButton CssClass="e-inherit e-appbar-menu e-light" Content="Products">
+        <DropDownMenuItems>
+            <DropDownMenuItem Text="Developer"></DropDownMenuItem>
+            <DropDownMenuItem Text="Analytics"></DropDownMenuItem>
+            <DropDownMenuItem Text="Reporting"></DropDownMenuItem>
+            <DropDownMenuItem Text="E-Signature"></DropDownMenuItem>
+            <DropDownMenuItem Text="Help Desk"></DropDownMenuItem>
+        </DropDownMenuItems>
+    </SfDropDownButton>
+    <SfDropDownButton CssClass="e-inherit e-appbar-menu e-light" Content="Company">
+        <DropDownMenuItems>
+            <DropDownMenuItem Text="About Us"></DropDownMenuItem>
+            <DropDownMenuItem Text="Customers"></DropDownMenuItem>
+            <DropDownMenuItem Text="Blog"></DropDownMenuItem>
+            <DropDownMenuItem Text="Careers"></DropDownMenuItem>
+        </DropDownMenuItems>
+    </SfDropDownButton>
+    <AppBarSpacer></AppBarSpacer>
+    <div style="width: 200px;" class="me-2">
+        <span class="e-input-group e-control-wrapper e-inherit @SearchInputFocus">
+            <input type="text" class="e-searchinput e-input" @onblur="@(e => SearchInputFocus = string.Empty)" @onfocus="@(e => SearchInputFocus = "e-input-focus")" placeholder="Search">
+            <span class="e-icons e-search e-input-group-icon"></span>
+        </span>
+    </div>
+    <AppBarSeparator></AppBarSeparator>
+    <SfButton CssClass="ms-2" Content="Login"></SfButton>
+</SfAppBar>
+
+<article class="content mx-2">
+    <PageTitle>Index</PageTitle>
+
+    <h1>Hello, world!</h1>
+
+    Welcome to your new app.
+
+</article>
+
+@code {
+    private string SearchInputFocus = string.Empty;
+}

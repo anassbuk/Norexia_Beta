@@ -1,0 +1,44 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <div class="switch-control mt-2">
+            <SfRadioButton Label="Interne" Name="ClientType" Value=@DelivererType.Internal.ToString() @bind-Checked="@Deliverer!.Type"></SfRadioButton>@*@onchange="OnProviderTypeChange"*@
+            <SfRadioButton Label="Société" Name="ClientType" Value=@DelivererType.External.ToString() @bind-Checked="@Deliverer!.Type"></SfRadioButton>
+        </div>
+
+        <ValidationMessage For="@(() => Deliverer!.Type)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=Deliverer!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => Deliverer!.Reference)"></ValidationMessage>
+    </div>
+
+    @if (Deliverer!.Type == DelivererType.External)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=Deliverer!.ServiceProvider Placeholder='Prestataire' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => Deliverer!.ServiceProvider)"></ValidationMessage>
+        </div>
+    }
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=Deliverer!.FirstName Placeholder='Prénom' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => Deliverer!.FirstName)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=Deliverer!.LastName Placeholder='Nom' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => Deliverer!.LastName)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=Deliverer!.Tel Placeholder='Téléphone' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => Deliverer!.Tel)"></ValidationMessage>
+    </div>
+</div>

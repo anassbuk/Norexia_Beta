@@ -1,0 +1,35 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Settings
+@using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.TreeGrid
+@using System.ComponentModel.DataAnnotations
+@using Syncfusion.Blazor.Notifications
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/ProviderSettings"
+
+<SettingAppBarComponent />
+<PageTitle>Provider settings</PageTitle>
+
+
+<SfTab CssClass="default-tab e-fill">
+    <TabAnimationSettings>
+        <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
+        <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
+    </TabAnimationSettings>
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Catégories de fournisseurs"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <ProviderCategorySettings OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></ProviderCategorySettings>
+            </ContentTemplate>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+<ToastComponent @ref=Toast></ToastComponent>

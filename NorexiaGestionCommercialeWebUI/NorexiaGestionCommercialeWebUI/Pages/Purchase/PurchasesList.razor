@@ -1,0 +1,42 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Purchases"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=PurchaseOrdersGrid Height="100%" AllowResizing=true DataSource="@PurchaseOrders" AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="PurchaseOrderDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" AllowResizing=false Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.ProviderId) Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.OrderDate) HeaderText="Date" MinWidth="120px">
+                        <Template>
+                            @{
+                                var date = (context as PurchaseOrderDto)!.OrderDate!.Value.ToString("g");
+                                <div>@date</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.Status) HeaderText="Statut" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.TaxPrice) HeaderText="Prix TVA" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.PriceExcludingTax) HeaderText="Prix HT" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.PriceIncludingTax) HeaderText="Prix TTC" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(PurchaseOrderDto.NetPrice) HeaderText="Prix ​​net" MinWidth="120px" Format="N2"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+<ToastComponent @ref=Toast></ToastComponent>

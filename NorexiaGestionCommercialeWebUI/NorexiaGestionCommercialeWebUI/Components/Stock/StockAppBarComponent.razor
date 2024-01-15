@@ -1,0 +1,19 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+<div>
+    <SfAppBar ColorMode="AppBarColor.Light">
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="États" OnClick="@(e=>OnSelect("/Stock/Status"))"></SfButton>
+        <SfDropDownButton CssClass="e-inherit e-appbar-menu e-light text-uppercase" Content="Mouvements">
+            <DropDownButtonEvents ItemSelected="ItemSelected"></DropDownButtonEvents>
+            <DropDownMenuItems>
+                <DropDownMenuItem Text="Entrées" Id="Entries" @onclick="@(e=>OnSelect("/Stock/Entries"))"></DropDownMenuItem>
+                <DropDownMenuItem Text="Sorties" Id="Exits" @onclick="@(e=>OnSelect("/Stock/Exits"))"></DropDownMenuItem>
+            </DropDownMenuItems>
+        </SfDropDownButton>
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="Transferts"></SfButton>
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="Retours"></SfButton>
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="Inventaires"></SfButton>
+        <AppBarSpacer></AppBarSpacer>
+        <SfButton CssClass="ms-2" Content="Login"></SfButton>
+    </SfAppBar>
+</div>

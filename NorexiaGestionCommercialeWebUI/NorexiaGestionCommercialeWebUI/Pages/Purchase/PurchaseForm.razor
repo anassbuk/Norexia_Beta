@@ -1,0 +1,33 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using NorexiaGestionCommercialeWebUI.Components.Purchases;
+@using Syncfusion.Blazor.Notifications
+
+@page "/Purchases/New"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="PurchaseCommandValidator" />
+    <PurchasesFormAppBarComponent></PurchasesFormAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <PurchasesGeneralInfoComponent @bind-PurchaseCommand=PurchaseCommand></PurchasesGeneralInfoComponent>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        <PurchasesLinesComponent @bind-PurchaseCommand=PurchaseCommand></PurchasesLinesComponent>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

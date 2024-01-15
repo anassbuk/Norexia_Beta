@@ -1,0 +1,8 @@
+﻿@using Syncfusion.Blazor.Inputs
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=PaymentCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.Note)"></ValidationMessage>
+    </div>
+</div>

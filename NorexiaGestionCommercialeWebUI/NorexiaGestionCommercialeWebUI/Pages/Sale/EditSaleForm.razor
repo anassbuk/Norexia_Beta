@@ -1,0 +1,61 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using NorexiaGestionCommercialeWebUI.Components.Sales
+@using Syncfusion.Blazor.Notifications
+
+@page "/Sales/{Id:guid}"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="SaleCommandValidator" />
+    <SalesFormAppBarComponent></SalesFormAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <div>
+                            <ValidationSummary></ValidationSummary>
+                        </div>
+                        <SalesGeneralInfoComponent @bind-SaleCommand=SaleCommand Customer="Customer" ProductAvailablities="ProductAvailablities"></SalesGeneralInfoComponent>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>lignes de vente</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <SalesLinesComponent @bind-SaleCommand=SaleCommand PriceGroups="PriceGroups" DefaultPriceGroupId="DefaultPriceGroupId"></SalesLinesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem Visible="@(SaleCommand!.Execution == SaleExecution.Scheduled)">
+                                    <HeaderTemplate>Livraison</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <SaleDeliveryInfoComponent @bind-SaleCommand=SaleCommand></SaleDeliveryInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Modalités de paiement</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <SalePaymentInfoComponent PaymentMeans=PaymentMeans DefaultPaymentTerms="DefaultPaymentTerms" @bind-SaleCommand=SaleCommand></SalePaymentInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

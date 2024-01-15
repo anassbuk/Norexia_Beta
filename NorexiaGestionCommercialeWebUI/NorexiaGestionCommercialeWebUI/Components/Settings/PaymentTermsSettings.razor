@@ -1,0 +1,74 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.PaymentTerms;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+
+<h2 class="section-header">Gestion des conditions de paiement</h2>
+<EditForm EditContext="EC" OnSubmit="EditPaymentTerms">
+    <FluentValidator TValidator="PaymentTermsDtoValidator" />
+    <div class="row m-0 my-2 align-items-start justify-content-center">
+        <div class="col-auto form-group mt-2 pt-1">
+            <div class="switch-control">
+                <SfSwitch ValueChange=@OnNegotiableChanged TChecked="bool?" CssClass="e-small" @bind-Checked=Negotiable></SfSwitch>
+                <label>Négociable</label>
+            </div>
+        </div>
+        <div class="form-group col-auto mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=PaymentTerms!.MaturityDuration Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Durée d’échéance (en jrs)">
+
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-auto">
+            <div class="row align-items-start">
+                <div class="col-auto form-group mt-2 pt-1">
+                    <div class="switch-control">
+                        <label>Facture d’acompte</label>
+                        <SfSwitch @bind-Checked="PaymentTerms!.DepositInvoice" TChecked="bool?" CssClass="e-small"></SfSwitch>
+                    </div>
+                </div>
+                <div class="form-group col-auto mt-1 pt-1">
+                    <SfNumericTextBox @bind-Value=DownPayment TValue=double? Min=0 Max=1 Step=0.01 Format="p2" Placeholder="Montant d’acompte (%)" FloatLabelType="@FloatLabelType.Auto">
+
+                        <NumericTextBoxEvents ValueChange="DownPaymentValueChanged" TValue="double?"></NumericTextBoxEvents>
+                    </SfNumericTextBox>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-auto">
+            <div class="row align-items-start">
+                <div class="col-auto form-group mt-2 pt-1">
+                    <div class="switch-control">
+                        <label>Paiement échelonné (en plusieurs fois)</label>
+                        <SfSwitch @bind-Checked=PaymentTerms!.PaymentByInstallments TChecked="bool?" CssClass="e-small"></SfSwitch>
+                    </div>
+                </div>
+                <div class="form-group col-auto mt-1 pt-1">
+                    <SfNumericTextBox @bind-Value=PaymentTerms!.PaymentByInstallmentsNumber Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Nombre de fois">
+                    </SfNumericTextBox>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto mt-1 pt-1">
+            <SfDropDownList @bind-Value=PaymentTerms!.PaymentOption TValue="PaymentOption?" TItem=DropDownPaymentOption Placeholder="Option de paiement" DataSource="ddPaymentOptions" FloatLabelType="FloatLabelType.Auto">
+                <DropDownListFieldSettings Value="PaymentOption" Text="DisplayName"></DropDownListFieldSettings>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => PaymentTerms!.PaymentOption)"></ValidationMessage>
+        </div>
+
+        <div class="d-flex flex-row-reverse">
+            <SfButton>Soumettre</SfButton>
+        </div>
+    </div>
+</EditForm>
+
+
+
+
+

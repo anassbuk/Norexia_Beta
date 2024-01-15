@@ -1,0 +1,32 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs;
+
+<div class="row">
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.LastName Placeholder="Nom" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.LastName)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.FirstName Placeholder="Prénom" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.FirstName)"></ValidationMessage>
+    </div>
+    @if (ProviderCommand!.ProviderType == ProviderType.Company)
+    {
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=ProviderCommand!.Function Placeholder="Fonction" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => ProviderCommand!.Function)"></ValidationMessage>
+        </div>
+    }
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.Mobile Placeholder="Mobile" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.Mobile)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.Tel Placeholder="Tel" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.Tel)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProviderCommand!.Email Placeholder="Email" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProviderCommand!.Email)"></ValidationMessage>
+    </div>
+</div>

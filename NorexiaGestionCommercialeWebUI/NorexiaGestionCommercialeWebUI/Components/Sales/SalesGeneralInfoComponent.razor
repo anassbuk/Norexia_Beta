@@ -1,0 +1,172 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=SaleCommand!.Reference Placeholder='N° Commande' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => SaleCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=SaleCommand!.OrderDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => SaleCommand!.OrderDate)"></ValidationMessage>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SaleCommand!.SaleOrderOrigin TValue="SaleOrderOrigin?" TItem=DropDownSaleOrderOrigin Placeholder="Origine" DataSource="ddSaleOrderOrigin" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="SaleOrderOrigin" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => SaleCommand!.SaleOrderOrigin)"></ValidationMessage>
+    </div>
+
+    @if (SaleCommand!.SaleOrderOrigin == SaleOrderOrigin.Quotation)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 pe-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=quotationSearchTerm Placeholder='N° Devis' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-quotation" Content="Rechercher client">
+                        <SfButton id="btn-search-quotation" IconCss="e-icons e-search" OnClick="SearchQuotation" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-quotation" Content="Ajouter devis">
+                        <SfButton id="btn-add-quotation" IconCss="e-icons e-plus" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-edit-quotation" Content="Editer devis">
+                        <SfButton id="btn-edit-quotation" IconCss="e-icons e-edit" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+            <ValidationMessage For="@(() => SaleCommand!.QuotationId)"></ValidationMessage>
+        </div>
+    }
+</div>
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SelectedSaleChannelId TValue="Guid?" TItem=ProductAvailabilityDto Placeholder="Canal" DataSource="ProductAvailablities" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+            <DropDownListEvents OnValueSelect="OnProductAvailabilityChanged" TValue="Guid?" TItem=ProductAvailabilityDto></DropDownListEvents>
+        </SfDropDownList>
+
+        <ValidationMessage For="@(() => SaleCommand!.SaleChannelId)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SaleCommand!.OperationType TValue="SaleOperationType?" TItem=DropDownSaleOperationType Placeholder="Type d’opération" DataSource="ddSaleOperationType" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="OperationType" Text="DisplayName"></DropDownListFieldSettings>
+            <DropDownListEvents TValue="SaleOperationType?" TItem=DropDownSaleOperationType ValueChange="OperationTypeChangeHandler"></DropDownListEvents>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => SaleCommand!.OperationType)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SaleCommand!.Execution TValue="SaleExecution?" TItem=DropDownSaleExecution Placeholder="Exécution"
+                        DataSource="ddSaleExecution" FloatLabelType="FloatLabelType.Auto" Enabled=@(SaleCommand!.OperationType != SaleOperationType.OrderTaking)>
+            <DropDownListFieldSettings Value="Execution" Text="DisplayName"></DropDownListFieldSettings>
+            <DropDownListEvents ValueChange="OnExecutionChange" TValue="SaleExecution?" TItem=DropDownSaleExecution></DropDownListEvents>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => SaleCommand!.Execution)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=SaleCommand!.CreatedBy Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => SaleCommand!.CreatedBy)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <div class="px-1">
+            <SfCheckBox Label="Client passagé" @bind-Checked="isPassing"></SfCheckBox>
+        </div>
+        @if (!isPassing)
+        {
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=clientSearchTerm Placeholder='Référence | Raison sociale | Nom' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-client" Content="Rechercher client">
+                        <SfButton id="btn-search-client" IconCss="e-icons e-search" OnClick="SearchClient" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-client" Content="Ajouter client">
+                        <SfButton id="btn-add-client" IconCss="e-icons e-plus" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-edit-client" Content="Editer client">
+                        <SfButton id="btn-edit-client" IconCss="e-icons e-edit" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+        }
+        <div>
+            <ValidationMessage For="@(() => SaleCommand!.CustomerId)"></ValidationMessage>
+        </div>
+    </div>
+
+    @if (!isPassing)
+    {
+        <div class="col-6 mt-1 pt-1">
+
+            <label class="address-headertext">Adresse de facturation</label>
+            <div class="border rounded p-1 bg-value-card">
+                @if (BillingCustomerAddress != null)
+                {
+                    <div class='e-list-content w-100'>@BillingCustomerAddress.StreetAdress</div>
+                    <span class='e-list-content'>@BillingCustomerAddress.ZipCode,</span>
+                    <span class='e-list-content'> @BillingCustomerAddress.City</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-1 pt-1">
+            <label class="address-headertext">Adresse de livraison</label>
+            <div class="border rounded p-1 bg-value-card">
+                @if (DeliveryCustomerAddress != null)
+                {
+                    <div class='e-list-content w-100'>@DeliveryCustomerAddress.StreetAdress</div>
+                    <span class='e-list-content'>@DeliveryCustomerAddress.ZipCode,</span>
+                    <span class='e-list-content'> @DeliveryCustomerAddress.City</span>
+                }
+            </div>
+        </div>
+    }
+</div>
+<div class="col-6 mt-1 pt-1">
+    <SfTextBox @bind-Value=SaleCommand!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    <ValidationMessage For="@(() => SaleCommand!.Status)"></ValidationMessage>
+</div>
+<div class="col-12 mt-1 pt-1">
+    <SfTextBox @bind-Value=SaleCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    <ValidationMessage For="@(() => SaleCommand!.Note)"></ValidationMessage>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

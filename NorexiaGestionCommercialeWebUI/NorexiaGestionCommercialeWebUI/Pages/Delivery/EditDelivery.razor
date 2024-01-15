@@ -1,0 +1,53 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Components.Delivery
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Delivery;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Deliveries/{Id:guid}"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="DeliveryCommandValidator" />
+    <DeliveryFormAppBar></DeliveryFormAppBar>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <DeliveryGeneralInfo @bind-DeliveryCommand=DeliveryCommand @bind-Customer=Customer OnDisplayCustomerAddress="DisplayCustomerAddress"></DeliveryGeneralInfo>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>lignes de livraison</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <DeliveryLinesComponent @bind-DeliveryCommand=DeliveryCommand PriceGroups="PriceGroups" DefaultPriceGroupId="DefaultPriceGroupId"></DeliveryLinesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Livraison</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <DeliveryInfoComponent @bind-DeliveryCommand=DeliveryCommand @ref="DeliveryInfoComponent" @bind-Customer=Customer></DeliveryInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+<ToastComponent @ref=Toast></ToastComponent>

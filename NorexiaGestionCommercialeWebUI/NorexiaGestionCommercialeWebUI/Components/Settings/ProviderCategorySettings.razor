@@ -1,0 +1,34 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+@using NorexiaGestionCommercialeWebUI.Models.Provider;
+
+<h2 class="section-header">Gestion des catégories de fournisseurs</h2>
+
+<SfGrid DataSource="@ProviderCategories" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog">
+        <Template>
+            @{
+                <FluentValidator TValidator="ProviderCategoryDtoValidator"></FluentValidator>
+                var category = (context as ProviderCategoryDto);
+                <div>
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <SfTextBox @bind-Value=category!.Name Placeholder="désignation" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            <ValidationMessage For="@(()=>category!.Name)"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="validation-message">@DialogValidationMessage</div>
+                </div>
+            }
+        </Template>
+    </GridEditSettings>
+    <GridEvents OnActionBegin="OnCategoryActionBegin" TValue="ProviderCategoryDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(ProviderCategoryDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(ProviderCategoryDto.Name) HeaderText="Désignation"></GridColumn>
+    </GridColumns>
+</SfGrid>

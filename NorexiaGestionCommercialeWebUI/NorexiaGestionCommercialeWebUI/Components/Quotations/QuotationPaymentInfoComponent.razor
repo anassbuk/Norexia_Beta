@@ -1,0 +1,52 @@
+﻿        @using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Payment;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+@using Syncfusion.Blazor.Buttons
+
+<div class="row m-0 my-2 align-items-start justify-content-center">
+
+    @if (QuotationCommand!.PaymentTerms != null)
+    {
+        <div class="form-group col-auto mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=QuotationCommand!.PaymentTerms!.MaturityDuration Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Durée d’échéance (en jrs)">
+
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-auto">
+            <div class="row align-items-start">
+                <div class="col-auto form-group mt-2 pt-1">
+                    <div class="switch-control">
+                        <label>Facture d’acompte</label>
+                        <SfSwitch @bind-Checked="QuotationCommand!.PaymentTerms!.DepositInvoice" TChecked="bool?" CssClass="e-small"></SfSwitch>
+                    </div>
+                </div>
+                <div class="form-group col-auto mt-1 pt-1">
+                    <SfNumericTextBox @bind-Value=DownPayment TValue=double? Min=0 Max=1 Step=0.01 Format="p2" Placeholder="Montant d’acompte (%)" FloatLabelType="@FloatLabelType.Auto">
+                        <NumericTextBoxEvents ValueChange="DownPaymentValueChanged" TValue="double?"></NumericTextBoxEvents>
+                    </SfNumericTextBox>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-auto">
+            <div class="row align-items-start">
+                <div class="col-auto form-group mt-2 pt-1">
+                    <div class="switch-control">
+                        <label>Paiement échelonné (en plusieurs fois)</label>
+                        <SfSwitch @bind-Checked=QuotationCommand!.PaymentTerms!.PaymentByInstallments TChecked="bool?" CssClass="e-small"></SfSwitch>
+                    </div>
+                </div>
+                <div class="form-group col-auto mt-1 pt-1">
+                    <SfNumericTextBox @bind-Value=QuotationCommand!.PaymentTerms!.PaymentByInstallmentsNumber Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Nombre de fois">
+                    </SfNumericTextBox>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>

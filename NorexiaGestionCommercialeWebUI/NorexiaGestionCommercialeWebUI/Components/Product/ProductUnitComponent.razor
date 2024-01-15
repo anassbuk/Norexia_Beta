@@ -1,0 +1,66 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Unit;
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+
+
+<EditForm EditContext="EC">
+    <FluentValidator TValidator="UnitMeasurementValidator" />
+    <div class="row">
+        <div class="col-6 mt-1 pt-1">
+            <SfDropDownList @bind-Value=PrimaryUnitMeasurement!.UnitId FloatLabelType=FloatLabelType.Auto TItem="UnitDto" TValue="Guid" DataSource="@Units" Placeholder="Sélectionner l'unité">
+                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                <DropDownListEvents OnValueSelect="OnUnitChanged" TValue="Guid" TItem="UnitDto"></DropDownListEvents>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => PrimaryUnitMeasurement!.UnitId)"></ValidationMessage>
+        </div>
+        <div class="col-6 mt-1 pt-1">
+            <SfDropDownList @bind-Value=PrimaryUnitMeasurement!.MeasurementId TItem="UnitMeasurementDto" TValue="Guid" DataSource="@SelectedUnit!.Measurements" FloatLabelType="FloatLabelType.Auto" Placeholder="Sélectionner la mesure">
+                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => PrimaryUnitMeasurement!.MeasurementId)"></ValidationMessage>
+        </div>
+    </div>
+</EditForm>
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Autres unités</h2>
+        <SfGrid DataSource="@UnitMeasurements" AllowResizing=true Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+            <GridEvents OnActionComplete="OnUnitActionComplete" OnActionBegin="OnUnitActionBegin" TValue="UnitMeasurement"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                <Template>
+                    @{
+                        var unitMeasurement = (context as UnitMeasurement);
+                        <div class="form-row">
+                            <div class="form-group">
+                                <SfDropDownList @bind-Value=unitMeasurement!.UnitId FloatLabelType=FloatLabelType.Auto TItem="UnitDto" TValue="Guid" DataSource="@Units" Placeholder="Sélectionner l'unité">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                    <DropDownListEvents OnValueSelect="OnDialogUnitChanged" TValue="Guid" TItem="UnitDto"></DropDownListEvents>
+                                </SfDropDownList>
+                                <ValidationMessage For="@(()=>unitMeasurement.UnitId)"></ValidationMessage>
+                            </div>
+                            <div class="form-group">
+                                <SfDropDownList @bind-Value=unitMeasurement!.MeasurementId TItem="UnitMeasurementDto" TValue="Guid" DataSource="@DialogSelectedUnit!.Measurements" FloatLabelType="FloatLabelType.Auto" Placeholder="Sélectionner la mesure">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                                <ValidationMessage For="@(()=>unitMeasurement.MeasurementId)"></ValidationMessage>
+                            </div>
+                            <div class="validation-message">@DialogValidationMessage</div>
+                        </div>
+                        <FluentValidator TValidator="UnitMeasurementValidator"></FluentValidator>
+                    }
+                </Template>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(UnitMeasurement.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(UnitMeasurement.UnitId) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(UnitMeasurement.UnitName) HeaderText="Unité" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(UnitMeasurement.MeasurementId) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(UnitMeasurement.MeasurementName) HeaderText="Mesure" MinWidth="120px"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

@@ -1,0 +1,33 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Components.Stock.Entry
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.StockEntry;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Stock/Entries/{Id:guid}"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="StockEntryCommandValidator" />
+    <StockEntryAppBar></StockEntryAppBar>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <StockEntryGeneralInfo @bind-StockEntryCommand=StockEntryCommand></StockEntryGeneralInfo>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        <StockEntryLinesComponent @bind-StockEntryCommand=StockEntryCommand></StockEntryLinesComponent>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+<ToastComponent @ref=Toast></ToastComponent>

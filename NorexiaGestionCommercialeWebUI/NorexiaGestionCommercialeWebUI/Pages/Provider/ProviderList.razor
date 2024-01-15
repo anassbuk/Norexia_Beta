@@ -1,0 +1,55 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Providers"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=ProvidersGrid DataSource="@Providers" Height="100%" AllowResizing=true AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnToolbarClick="ToolbarClickHandler" OnActionBegin="OnActionBegin" TValue="ProvidersDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.SocialReason) HeaderText="Raison sociale" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.FirstName) HeaderText="Nom/Prénom" MinWidth="120px">
+                        <Template>
+                            @{
+                                var provider = (context as ProvidersDto);
+                                <div>@($"{provider!.FirstName}, {provider!.LastName}")</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=ProviderCategory.Name HeaderText="Catégorie" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.ProviderType) HeaderText="Type" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.Tel) HeaderText="Tel" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProvidersDto.Active) HeaderText="Actif" MinWidth="120px" FilterSettings="@(new FilterSettings { Type = Syncfusion.Blazor.Grids.FilterType.CheckBox })" ClipMode="ClipMode.EllipsisWithTooltip">
+                        <Template>
+                            @{
+                                var customer = (context as ProvidersDto);
+                                @if (customer!.Active == true)
+                                {
+                                    <div>Oui</div>
+                                }
+                                else
+                                {
+                                    <div>Non</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+<ToastComponent @ref=Toast></ToastComponent>

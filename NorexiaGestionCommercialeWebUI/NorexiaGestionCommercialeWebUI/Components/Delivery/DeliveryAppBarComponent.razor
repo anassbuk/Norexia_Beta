@@ -1,0 +1,9 @@
+﻿@using Syncfusion.Blazor.Buttons
+<div>
+    <SfAppBar ColorMode="AppBarColor.Light">
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="Bons de livraison" OnClick="@(e=>OnSelect("/Deliveries"))"></SfButton>
+        <SfButton CssClass="e-inherit e-appbar-menu e-light" Content="Livreurs" OnClick="@(e=>OnSelect("/Deliverers"))"></SfButton>
+        <AppBarSpacer></AppBarSpacer>
+        <SfButton CssClass="ms-2" Content="Login"></SfButton>
+    </SfAppBar>
+</div>

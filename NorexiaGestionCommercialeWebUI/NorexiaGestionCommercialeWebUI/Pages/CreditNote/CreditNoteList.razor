@@ -1,0 +1,75 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Delivery
+@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/CreditNotes"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=CreditNotesGrid Height="100%" DataSource="@CreditNotes" AllowResizing=true AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="CreditNoteDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.CreditNumber) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.CreditNoteDate) HeaderText="Date" MinWidth="120px" Format="g"></GridColumn>
+                            <GridColumn Field=@nameof(CreditNoteDto.CreditOrigin) HeaderText="Origine" MinWidth="120px">
+                            <Template>
+                                @{
+                                var origin = (context as CreditNoteDto)!.CreditOrigin;
+                                if (origin == CreditOrigin.Invoice)
+                                    {
+                                        <div>Facture</div>
+                                    }
+                               
+                                }
+                            </Template>
+                            </GridColumn>
+                     <GridColumn Field=@nameof(CreditNoteDto.InvoiceRef) HeaderText="Numéro Facture" MinWidth="120px"></GridColumn>
+                     <GridColumn Field=@nameof(CreditNoteDto.CustomerRef) HeaderText="Client" MinWidth="120px"></GridColumn>
+                     <GridColumn Field=@nameof(CreditNoteDto.Responsable) HeaderText="Responsable" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.AmountCredit) HeaderText="Montant Avoir" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.Raison) HeaderText="Raison" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteDto.Note) HeaderText="Commentaire" MinWidth="120px"></GridColumn>
+                   
+                    <GridColumn Field=@nameof(CreditNoteDto.CreditAction) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as CreditNoteDto)!.CreditAction;
+                                if (origin == CreditAction.InvoiceDeduction)
+                                {
+                                    <div>Déduction Facture </div>
+                                }
+                                else if (origin == CreditAction.Refund)
+                                {
+                                    <div>Remboursement</div>
+                                }
+                                else if (origin == CreditAction.GoodBuy)
+                                {
+                                    <div>Bon d’achat</div>
+                                }
+
+
+                            }
+                        </Template>
+                    </GridColumn>
+
+                    <GridColumn Field=@nameof(CreditNoteDto.DueDate) HeaderText="Date d’échéance" MinWidth="120px" Format="g"></GridColumn>
+
+                   
+
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+
+</div>
+<ToastComponent @ref=Toast></ToastComponent>

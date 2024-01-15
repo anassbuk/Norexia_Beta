@@ -1,0 +1,234 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Delivery;
+@using NorexiaGestionCommercialeWebUI.Models.Invoice;
+@using NorexiaGestionCommercialeWebUI.Models.StockEntry;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+
+<div class="row">
+    <div class="col-auto mt-1 pt-1">
+        <div class="d-flex align-items-center mb-2">
+            <div class="flex-grow-1 px-1">
+                <SfNumericTextBox @bind-Value=discount TValue="double?" Min=0 Max=1 Step=0.01 Format="p2" Placeholder='Remise' FloatLabelType="FloatLabelType.Auto">
+                    <NumericTextBoxEvents TValue="double?" ValueChange="@DiscountValueChangeHandler"></NumericTextBoxEvents>
+                </SfNumericTextBox>
+                <ValidationMessage For="@(() => InvoiceCommand!.Discount)"></ValidationMessage>
+            </div>
+        </div>
+    </div>
+    <div class="col mt-1 pt-1 d-flex align-items-center justify-content-end">
+        <div class="p-2 text-center bg-value-card">
+            <div class="m-2 fw-bold total">
+                @if (InvoiceCommand!.PaymentTerms != null && InvoiceCommand!.PaymentTerms.DepositInvoice != true)
+                {
+                    <span>Net à payer : <span>@netPrice.ToString("N2")</span></span>
+                }
+                else if (depositInvoiceData != null)
+                {
+                    <span>
+                        Net à payer : <span>
+                            @depositInvoiceData!.TotalPriceIncludingTax?.ToString("N2")
+                        </span>
+                    </span>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1 d-flex align-items-center">
+        <div class="flex-grow-1 px-1">
+            <SfTextBox CssClass="flex-grow-1" @bind-Value=productSearchTerm Placeholder='Référence produit' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        </div>
+        <div class="px-1">
+            <SfTooltip Target="#btn-search-product" Content="Rechercher produit">
+                <SfButton id="btn-search-product" IconCss="e-icons e-search" OnClick="SearchProduct" type="button"></SfButton>
+            </SfTooltip>
+        </div>
+    </div>
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Lignes de facture</h2>
+
+        @if (InvoiceCommand!.PaymentTerms != null && InvoiceCommand!.PaymentTerms.DepositInvoice != true)
+        {
+
+            <SfGrid @ref=InvoiceLinesGrid AllowResizing=true DataSource="@InvoiceCommand!.InvoiceLines" Toolbar="@(new List<string>() { "Edit","Delete","Update","Cancel"})">
+                <GridEvents OnActionComplete="OnActionComplete" TValue="InvoiceLineDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true">
+                    <Validator>
+                        <FluentValidator TValidator="InvoiceLineDtoValidator"></FluentValidator>
+                    </Validator>
+                </GridEditSettings>
+                <GridColumns>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.DeliveryRef) HeaderText="Référence de livraison" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Reference) HeaderText="Référence produit" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.ShortDesignation) HeaderText="Désignation" MinWidth="120px" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.SellingPriceId) HeaderText="Groupe de prix" Format="N2" MinWidth="120">
+                        <EditTemplate>
+                            @{
+                                <SfDropDownList TValue="Guid?" TItem=PriceGroupDto Placeholder="Groupe de prix" DataSource="GetLinePriceGroups(context)">
+                                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                    <DropDownListEvents ValueChange="(args) => LineSellingPriceChanged(args, context)" TValue="Guid?" TItem="PriceGroupDto"></DropDownListEvents>
+                                </SfDropDownList>
+                                <ValidationMessage For="@(() => (context as InvoiceLineDto)!.SellingPriceId)"></ValidationMessage>
+                            }
+
+                        </EditTemplate>
+                        <Template>
+                            @{
+                                var line = (context as InvoiceLineDto);
+                                var linePriceGroupId = line!.SellingPrices.Single(p => p.Id == line.SellingPriceId).PriceGroupId;
+                                @if (line!.SellingPrices.Single(p => p.PriceGroupId == DefaultPriceGroupId).Id == line.SellingPriceId)
+                                {
+                                    <div>Par défaut</div>
+                                }
+                                else
+                                {
+                                    <div>@PriceGroups!.Single(g => g.Id == linePriceGroupId).Name</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Price) HeaderText="Prix unitaire HT" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Qty) HeaderText="Quantité" MinWidth="120px">
+                        <EditTemplate>
+                            @{
+                                var line = (context as InvoiceLineDto);
+                                <SfNumericTextBox @bind-Value=line!.Qty Placeholder='Quantité' Min="0">
+                                    <NumericTextBoxEvents ValueChange="(args) => LineQuantityChanged(args ,context)" TValue="int?"></NumericTextBoxEvents>
+                                </SfNumericTextBox>
+                                <ValidationMessage For="@(() => line.Qty)"></ValidationMessage>
+                            }
+                        </EditTemplate>
+                    </GridColumn>
+
+                    <GridColumn Field=@nameof(InvoiceLineDto.Vat) HeaderText="TVA (%)" MinWidth="120" AllowEditing=false>
+                        <Template>
+                            @{
+                                var val = (((double?)(context as InvoiceLineDto)!.Vat ?? 0) / 100);
+                                <div>@val.ToString("P2")</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Discount) HeaderText="Remise (%)" MinWidth="120" AllowEditing=false>
+                        <Template>
+                            @{
+                                var val = (((double?)(context as InvoiceLineDto)!.Discount ?? 0) / 100);
+                                <div>@val.ToString("P2")</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.TotalPriceExcludingTax) HeaderText="Total HT" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.TotalVATPrice) HeaderText="Montant TVA" MinWidth="120" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.TotalPriceIncludingTax) HeaderText="Total TTC" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        }
+        else if (depositInvoiceData != null)
+        {
+            <div tabindex="-1" class="sf-grid e-grid e-control e-responsive e-default e-gridhover e-resize-lines e-grid-height e-lib e-keyboard" style="width:auto;" role="grid">
+                <div class="e-gridheader">
+                    <div class="e-headercontent e-lib e-droppable" style="">
+                        <table class="e-table">
+                            <thead>
+                                <tr class="e-columnheader">
+                                    <th class="e-headercell e-leftalign"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Désignation</span></div><div class="e-rhandler"></div></th>
+                                    <th class="e-headercell e-leftalign"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Prix unitaire HT</span></div><div class="e-sortfilterdiv e-icons "></div><div class="e-rhandler"></div></th>
+                                    <th class="e-headercell e-leftalign"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Quantité</span></div><div class="e-sortfilterdiv e-icons "></div><div class="e-rhandler"></div></th>
+                                    <th class="e-headercell e-leftalign"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Total HT</span></div><div class="e-sortfilterdiv e-icons "></div><div class="e-rhandler"></div></th>
+                                    <th class="e-headercell e-leftalign"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Montant TVA</span></div><div class="e-sortfilterdiv e-icons "></div><div class="e-rhandler"></div></th>
+                                    <th class="e-headercell e-leftalign e-lastcell"><div class="e-headercelldiv" style="text-align:left"><span class="e-headertext">Total TTC</span></div><div class="e-sortfilterdiv e-icons "></div><div class="e-rhandler"></div></th>
+                                </tr>
+                            </thead>
+                            <tbody class="e-hide"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="e-gridcontent">
+                    <div class="e-content">
+                        <table class="e-table">
+                            <tr class="e-row e-altrow">
+                                <td class="e-rowcell" aria-label="Désignation" style="text-align:left">@depositInvoiceData!.Designation</td>
+                                <td class="e-rowcell" aria-label="Prix unitaire HT" style="text-align:left">@depositInvoiceData!.Price?.ToString("N2")</td>
+                                <td class="e-rowcell" aria-label="Quantité" style="text-align:left">@depositInvoiceData!.Qty</td>
+                                <td class="e-rowcell" aria-label="Total HT" style="text-align:left">@depositInvoiceData!.TotalPriceExcludingTax?.ToString("N2")</td>
+                                <td class="e-rowcell" aria-label="Montant TVA" style="text-align:left">@depositInvoiceData!.TotalVATPrice?.ToString("N2")</td>
+                                <td class="e-rowcell" aria-label="Total TTC" style="text-align:left">@depositInvoiceData!.TotalPriceIncludingTax?.ToString("N2")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-auto mt-1 pt-1">
+        <div class="d-flex align-items-center mb-2">
+            <div class="flex-grow-1 px-1">
+                <SfDropDownList @bind-Value=InvoiceCommand!.CurrencyId TValue="Guid?" TItem=CurrencyDto Placeholder="Devise" DataSource="Currencies" FloatLabelType="FloatLabelType.Auto">
+                    <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                </SfDropDownList>
+                <ValidationMessage For="@(() => InvoiceCommand!.CurrencyId)"></ValidationMessage>
+            </div>
+        </div>
+    </div>
+
+    <div class="col mt-1 pt-1 d-flex align-items-center justify-content-end">
+        <div class="total m-2">
+            @if (InvoiceCommand!.PaymentTerms != null && InvoiceCommand!.PaymentTerms.DepositInvoice != true)
+            {
+                <span class="bg-value-card p-1 m-1">
+                    Total HT : <span>
+                        @priceExcludingTax.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TVA : <span>
+                        @taxPrice.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TTC : <span>
+                        @priceIncludingTax.ToString("N2")
+                    </span>
+                </span>
+            }
+            else if (depositInvoiceData != null)
+            {
+                <span class="bg-value-card p-1 m-1">
+                    Total HT : <span>
+                        @depositInvoiceData!.TotalPriceExcludingTax?.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TVA : <span>
+                        @depositInvoiceData!.TotalVATPrice?.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TTC : <span>
+                        @depositInvoiceData!.TotalPriceIncludingTax?.ToString("N2")
+                    </span>
+                </span>
+            }
+        </div>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

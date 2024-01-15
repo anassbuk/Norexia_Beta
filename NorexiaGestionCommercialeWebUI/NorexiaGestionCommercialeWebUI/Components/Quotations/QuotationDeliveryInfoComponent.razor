@@ -1,0 +1,20 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models.Quotation;
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Calendars
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=QuotationCommand!.DeliveryMode TValue="DeliveryMode?" TItem=DropDownDeliveryMode Placeholder="Mode livraison" DataSource="ddDeliveryMode" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="DeliveryMode" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+    </div>
+
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=QuotationCommand!.DeliveryDate Placeholder='Date de livraison' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => QuotationCommand!.DeliveryDate)"></ValidationMessage>
+    </div>
+
+</div>

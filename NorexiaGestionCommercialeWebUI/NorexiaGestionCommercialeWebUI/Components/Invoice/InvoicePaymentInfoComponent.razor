@@ -1,0 +1,141 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.PaymentTerms;
+@using NorexiaGestionCommercialeWebUI.Models.Sale;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.DropDowns
+
+<div class="row m-0 my-2 align-items-start justify-content-center">
+
+    @if (InvoiceCommand!.PaymentTerms != null)
+    {
+        <div class="form-group col-auto mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=InvoiceCommand!.PaymentTerms!.MaturityDuration Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Durée d’échéance (en jrs)">
+                <NumericTextBoxEvents ValueChange="MaturityDurationValueChanged" TValue="int?"></NumericTextBoxEvents>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="form-group col-auto mt-1 pt-1">
+            <SfDatePicker @bind-Value=InvoiceCommand!.DueDate Placeholder='Date d’échéance' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+            <ValidationMessage For="@(() => InvoiceCommand!.DueDate)"></ValidationMessage>
+        </div>
+
+        @if (InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.SalesOrder)
+        {
+            <div class="col-auto">
+                <div class="row align-items-start">
+                    <div class="col-auto form-group mt-2 pt-1">
+                        <div class="switch-control">
+                            <label>Facture d’acompte</label>
+                            <SfSwitch @bind-Checked="InvoiceCommand!.PaymentTerms!.DepositInvoice" TChecked="bool?" CssClass="e-small" ValueChange="DepositInvoiceChange"></SfSwitch>
+                        </div>
+                    </div>
+                    @if (InvoiceCommand!.PaymentTerms!.DepositInvoice == true)
+                    {
+                        <div class="form-group col-auto mt-1 pt-1">
+                            <SfNumericTextBox @bind-Value=DownPayment TValue=double? Min=0 Max=1 Step=0.01 Format="p2" Placeholder="Montant d’acompte (%)" FloatLabelType="@FloatLabelType.Auto">
+                                <NumericTextBoxEvents ValueChange="DownPaymentValueChanged" TValue="double?"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="col-auto">
+            <div class="row align-items-start">
+                <div class="col-auto form-group mt-2 pt-1">
+                    <div class="switch-control">
+                        <label>Paiement échelonné (en plusieurs fois)</label>
+                        <SfSwitch @bind-Checked=InvoiceCommand!.PaymentTerms!.PaymentByInstallments TChecked="bool?" CssClass="e-small"></SfSwitch>
+                    </div>
+                </div>
+                <div class="form-group col-auto mt-1 pt-1">
+                    <SfNumericTextBox @bind-Value=InvoiceCommand!.PaymentTerms!.PaymentByInstallmentsNumber Min=0 TValue=int? FloatLabelType=FloatLabelType.Auto Placeholder="Nombre de fois">
+                    </SfNumericTextBox>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+                        
+<div class="row">
+    <div class="col-12">
+        <h2 class="section-header">Règlements planifié</h2>
+        <SfGrid @ref=PaymentsGrid AllowResizing=true DataSource="@InvoiceCommand!.InvoicePayments" Toolbar="@(new List<string>() { "Add","Edit", "Delete","Update","Cancel"})">
+            <GridEvents OnActionComplete="OnActionComplete" TValue="PaymentDto"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true">
+                <Validator>
+                    <FluentValidator TValidator="PaymentDtoValidator"></FluentValidator>
+                </Validator>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(PaymentDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.Reference) HeaderText="Référence" MinWidth="120px" AllowEditing=true>
+                    <EditTemplate>
+                        @{
+                            <SfTextBox @bind-Value="(context as PaymentDto)!.Reference" FloatLabelType=FloatLabelType.Auto Placeholder="Référence">
+
+                            </SfTextBox>
+                            <ValidationMessage For="@(() => (context as PaymentDto)!.Reference)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.EntryDate) HeaderText="Date création" MinWidth="120px" AllowEditing=true Format="g" EditType="EditType.DatePickerEdit" Type="ColumnType.Date">
+                    <EditTemplate>
+                        @{
+                            (context as PaymentDto)!.EntryDate = (context as PaymentDto)!.EntryDate ?? DateTimeOffset.Now;
+                            <SfDatePicker @bind-Value="(context as PaymentDto)!.EntryDate" Placeholder="Date création" Locale="fr" FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+                            <ValidationMessage For="@(() => (context as PaymentDto)!.EntryDate)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.DueDate) HeaderText="Date d'échéance" MinWidth="120px" AllowEditing=true Format="g">
+                    <EditTemplate>
+                        @{
+                            <SfDatePicker @bind-Value="(context as PaymentDto)!.DueDate" Placeholder="Date d'échéance" FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+                            <ValidationMessage For="@(() => (context as PaymentDto)!.DueDate)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.OperationDate) HeaderText="Date opération" MinWidth="120px" AllowEditing=true Format="g"></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.PaymentMeanName) HeaderText="Moyen de paiement" MinWidth="120px" AllowEditing=true>
+                    <EditTemplate>
+                        @{
+                            <SfDropDownList @bind-Value="(context as PaymentDto)!.PaymentMeanId" TValue="Guid?" TItem=PaymentMeanDto Placeholder="Moyen de paiement" DataSource="PaymentMeans">
+                                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                <DropDownListEvents ValueChange="(args) => InvoicePaymentMeanChanged(args, context)" TValue="Guid?" TItem="PaymentMeanDto"></DropDownListEvents>
+                            </SfDropDownList>
+                            <ValidationMessage For="@(() => (context as PaymentDto)!.PaymentMeanId)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.AmountToBePaid) HeaderText="Montant à régler" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.AmountPaid) HeaderText="Montant reglé" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.Status) HeaderText="Statut" MinWidth="120px" AllowEditing=false></GridColumn>
+            </GridColumns>
+        </SfGrid>
+
+        <ValidationMessage For="@(() => @InvoiceCommand!.InvoicePayments)"></ValidationMessage>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col mt-1 pt-1 d-flex align-items-center justify-content-end">
+        <div class="me-1 p-2 text-center bg-value-card">
+            <div class="m-2 fw-bold total">
+                <span>Montant réglé : <span>@SettledAmount.ToString("N2")</span></span>
+            </div>
+        </div>
+        <div class="ms-1 p-2 text-center bg-value-card">
+            <div class="m-2 fw-bold total">
+                <span>Montant restant : <span>@RemainingAmount.ToString("N2")</span></span>
+            </div>
+        </div>
+    </div>
+</div>

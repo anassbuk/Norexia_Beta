@@ -1,0 +1,104 @@
+﻿@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+
+
+<div class="row">
+    <div class="col-6">
+        <div class="row">
+            <div class="col-12 mt-1 pt-1">
+                <SfTextBox @bind-Value=ProductCommand!.ShortDesignation Placeholder='Désignation du produit' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                <ValidationMessage For="@(() => ProductCommand!.ShortDesignation)"></ValidationMessage>
+            </div>
+
+            <div class="col-12 mt-1 pt-1">
+                <div class="switch-control mt-2">
+                    <SfSwitch CssClass="e-small" @bind-Checked="CanBeSold" ValueChange="OnProductActionChanged" TChecked="bool?"></SfSwitch>
+                    <label class="me-2">Peut être vendu</label>
+                    <SfSwitch CssClass="e-small" @bind-Checked="CanBePurchased" ValueChange="OnProductActionChanged" TChecked="bool?"></SfSwitch>
+                    <label>Peut être acheté</label>
+                </div>
+
+                <ValidationMessage For="@(() => ProductCommand!.Action)"></ValidationMessage>
+            </div>
+
+            <div class="col-12 mt-1 pt-1">
+                <SfTextBox @bind-Value=ProductCommand!.Reference Placeholder='Reference' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                <ValidationMessage For="@(() => ProductCommand!.Reference)"></ValidationMessage>
+            </div>
+
+            <div class="col-12 mt-1 pt-1">
+                <SfTextBox @bind-Value=ProductCommand!.Description Multiline=true Placeholder='Description' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                <ValidationMessage For="@(() => ProductCommand!.Description)"></ValidationMessage>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <SfCarousel AnimationEffect="CarouselAnimationEffect.Fade" CssClass="templateCarousel">
+            <ChildContent>
+                @if (ProductCommand!.ProductImages!.Count == 0)
+                {
+                    <CarouselItem>
+                        <figure class="img-container d-flex align-items-center">
+                            <img src="/images/carousel/placeholder.png" alt="Default image" style="height:100%;width:100%" />
+                        </figure>
+                    </CarouselItem>
+                }
+                else
+                {
+                    @foreach (var img in ProductCommand!.ProductImages!)
+                    {
+                        <CarouselItem>
+                            <figure class="img-container d-flex align-items-center">
+                                <img src=@($"data:{img.ContentType};base64,{img.Base64Data}") class="card-img-top" alt=@img.Name style="height:100%;width:100%" />
+                            </figure>
+                        </CarouselItem>
+                    }
+                }
+
+                <SfButton OnClick=ShowImagesEditDialog IconCss="e-icons e-edit btn-edit-images-icon" CssClass="btn-edit-images" type="button"></SfButton>
+            </ChildContent>
+        </SfCarousel>
+    </div>
+</div>
+
+<SfDialog @ref=ImagesDialog Width="450px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsImageDialogVisible">
+    <DialogTemplates>
+        <Header> Modifier les images de produit </Header>
+        <Content>
+            <SfUploader @ref="SfUploader" AllowedExtensions=".jpg, .jpeg, .png, .gif, .bmp, .heif, .heic">
+                <UploaderEvents ValueChange="OnImageUploaderChangeHandler"></UploaderEvents>@*OnRemove=OnFileRemove*@
+                @if (ProductCommand!.ProductImages!.Count > 0)
+                {
+                    <UploaderFiles>
+                        @foreach (var img in ProductCommand!.ProductImages!)
+                        {
+                            <UploaderUploadedFiles Name="@Path.GetFileNameWithoutExtension(img.Name)" Size=@Convert.FromBase64String(img.Base64Data).Length Type="@Path.GetExtension(img.Name)"></UploaderUploadedFiles>
+                        }
+                    </UploaderFiles>
+                }
+                <UploaderTemplates>
+                    <Template Context="context">
+                        <table>
+                            <tr>
+                                <td>
+                                    <img class="upload-image" alt="Preview Image @(context.Name)"
+                                         src="@(ProductCommand!.ProductImages.Count > 0 && ProductCommand!.ProductImages.Any(i=>i.Name == context.Name) ?
+                                                    $"data:{ProductCommand!.ProductImages.First(i=>i.Name == context.Name).ContentType};base64,{ProductCommand!.ProductImages.First(i=>i.Name == context.Name).Base64Data}"
+                                                        : string.Empty)">
+                                </td>
+                                <td>
+                                    <div style="padding: 7px;">
+                                        <span class="uploader-file-name" title="@(context.Name)">@(context.Name)</span>
+                                        <i>@(context.Size) Bytes</i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <SfButton OnClick=@(()=>OnFileRemove(context.Name)) IconCss="e-icons e-trash" CssClass="e-upload-icon"></SfButton>
+                    </Template>
+                </UploaderTemplates>
+            </SfUploader>
+        </Content>
+    </DialogTemplates>
+</SfDialog>

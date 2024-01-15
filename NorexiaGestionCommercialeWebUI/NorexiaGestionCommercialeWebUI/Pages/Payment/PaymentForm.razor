@@ -1,0 +1,60 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Components.Payment
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Payment;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Payments/New"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="PaymentCommandValidator" />
+    <PaymentAppBarComponent></PaymentAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <PaymentGeneralInfo @bind-PaymentCommand=PaymentCommand PaymentMeans="PaymentMeans" InvoiceAsPaymentChanged="InvoiceInfoChanged" SaleOrderAsPaymentChanged="SaleOrderInfoChanged"></PaymentGeneralInfo>
+                    </CardContent>
+
+                    <CardContent EnableSeparator="true"></CardContent>
+
+                    <CardContent>
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>Règlements associés</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <AssociatedPaymentsComponent AssociatedPayments="AssociatedPayments"></AssociatedPaymentsComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>État</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <PaymentOriginData @bind-PaymentCommand=PaymentCommand InvoiceInfo="InvoiceInfo" SaleInfo="SaleInfo"></PaymentOriginData>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Note</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <PaymentNoteComponent @bind-PaymentCommand=PaymentCommand></PaymentNoteComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+<ToastComponent @ref=Toast></ToastComponent>

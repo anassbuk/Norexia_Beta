@@ -1,0 +1,34 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.PaymentTerms;
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+
+<h2 class="section-header">Gestion des moyens de paiement</h2>
+
+<SfGrid DataSource="@PaymentMeans" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog">
+        <Template>
+            @{
+                <FluentValidator TValidator="PaymentMeanDtoValidator"></FluentValidator>
+                var mean = (context as PaymentMeanDto);
+                <div>
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <SfTextBox @bind-Value=mean!.Name Placeholder="désignation" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            <ValidationMessage For="@(()=>mean!.Name)"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="validation-message">@DialogValidationMessage</div>
+                </div>
+            }
+        </Template>
+    </GridEditSettings>
+    <GridEvents OnActionBegin="OnMeanActionBegin" TValue="PaymentMeanDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(PriceGroupDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(PriceGroupDto.Name) HeaderText="Désignation"></GridColumn>
+    </GridColumns>
+</SfGrid>

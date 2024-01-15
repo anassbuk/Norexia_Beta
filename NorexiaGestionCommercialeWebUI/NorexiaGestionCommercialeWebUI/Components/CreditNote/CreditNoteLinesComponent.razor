@@ -1,0 +1,99 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Delivery;
+@using NorexiaGestionCommercialeWebUI.Models.CreditNote;
+@using NorexiaGestionCommercialeWebUI.Models.StockEntry;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+
+<div class="row">
+    <div class="col mt-1 pt-1 d-flex align-items-center justify-content-end">
+        <div class="p-2 text-center bg-value-card">
+            <div class="m-2 fw-bold total">
+                <span> Avoir <span>@netPrice.ToString("N2")</span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Lignes de facture</h2>
+        <SfGrid @ref=CreditNoteLinesGrid AllowResizing=true DataSource="@CreditNoteCommand!.CreditNoteLines" Toolbar="@(new List<string>() { "Edit","Delete","Update","Cancel"})">
+            <GridEvents OnActionComplete="OnActionComplete" TValue="CreditNoteLineDto"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true">
+                <Validator>
+                    <FluentValidator TValidator="CreditNoteLineDtoValidator"></FluentValidator>
+                </Validator>
+            </GridEditSettings>
+             <GridColumns>
+                <GridColumn Field=@nameof(CreditNoteLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.DeliveryRef) HeaderText="Référence de livraison" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.Reference) HeaderText="Référence produit" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.ShortDesignation) HeaderText="Désignation" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.Price) HeaderText="Prix unitaire HT" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.Qty) HeaderText="Quantité prévue" MinWidth="120" AllowEditing=true>
+                    <EditTemplate>
+                        @{
+                            // Check if LineQuantityChanged method is called
+                            var line = (context as CreditNoteLineDto);
+                            <SfNumericTextBox @bind-Value=line!.Qty Placeholder='Quantité' Min="0">
+                                <!-- Ensure TValue matches the data type of Qty (int?) -->
+                                <NumericTextBoxEvents ValueChange="(args) => LineQuantityChanged(args, context)" TValue="int?"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+
+                            <!-- Check if ValidationMessage is displayed properly -->
+                            <ValidationMessage For="@(() => line.Qty)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.Vat) HeaderText="TVA (%)" MinWidth="120" AllowEditing=false>
+                    <Template>
+                        @{
+                            var val = (((double?)(context as CreditNoteLineDto)!.Vat ?? 0) / 100);
+                            <div>@val.ToString("P2")</div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.TotalPriceExcludingTax) HeaderText="Prix total HT" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(CreditNoteLineDto.TotalPriceIncludingTax) HeaderText=" TTC" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+
+            </GridColumns>
+        </SfGrid>
+
+        <div class="col mt-1 pt-1 d-flex align-items-center justify-content-end">
+            <div class="total m-2">
+                <span class="bg-value-card p-1 m-1">
+                    Total HT : <span>
+                        @priceExcludingTax.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TVA : <span>
+                        @taxPrice.ToString("N2")
+                    </span>
+                </span>
+                <span class="bg-value-card p-1 m-1">
+                    Total TTC : <span>
+                        @priceIncludingTax.ToString("N2")
+                    </span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

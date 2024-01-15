@@ -1,0 +1,67 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Settings
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Family;
+@using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.TreeGrid
+@using System.ComponentModel.DataAnnotations
+@using Syncfusion.Blazor.Notifications
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+
+<h2 class="section-header">Gestion des familles & sous familles</h2>
+
+<SfTreeGrid DataSource="@Families" IdMapping="FamilyId" ParentIdMapping="ParentFamilyId" TreeColumnIndex="1" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <TreeGridPageSettings PageSize="3"></TreeGridPageSettings>
+    <TreeGridEvents OnActionBegin="OnActionBegin" TValue="SelfReferentialFamily"></TreeGridEvents>
+    <TreeGridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="Syncfusion.Blazor.TreeGrid.EditMode.Dialog" ShowDeleteConfirmDialog="true">
+    </TreeGridEditSettings>
+    <TreeGridColumns>
+        <TreeGridColumn Visible=false Field="FamilyId" HeaderText="Family ID" IsPrimaryKey="true"></TreeGridColumn>
+        <TreeGridColumn Field="Designation" HeaderText="Familles"></TreeGridColumn>
+    </TreeGridColumns>
+</SfTreeGrid>
+
+<SfDialog Width="350px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsCreateDialogVisible">
+
+    <DialogEvents Closed="@DialogClosedHandler"></DialogEvents>
+    <DialogTemplates>
+        <Header>Ajouter une famille / sous famille</Header>
+        <Content>
+            <EditForm EditContext="EC">
+                <FluentValidator TValidator="SelfReferentialFamilyValidator" />
+
+                <div class="form-row">
+                    <div class="form-group">
+                        @if (IsAddDialog)
+                        {
+                            <div class="mt-2">
+                                <SfCheckBox Label="Voulez-vous créer une sous-famille ?" CssClass="e-small" @bind-Checked=IsSubfamily LabelPosition="Syncfusion.Blazor.Buttons.LabelPosition.Before"></SfCheckBox>
+                            </div>
+                        }
+                        @if (IsSubfamily)
+                        {
+                            <div class="mt-2">
+                                <SfDropDownList @bind-Value=DialogFamily!.ParentFamilyId FloatLabelType="FloatLabelType.Always" TValue="Guid?" TItem="SelfReferentialFamily" Placeholder="Selectionner la famille" DataSource="@ParentFamilies">
+                                    <DropDownListFieldSettings Value="FamilyId" Text="Designation"></DropDownListFieldSettings>
+                                </SfDropDownList>
+                            </div>
+                        }
+                        <div class="mt-2">
+                            <SfTextBox @bind-Value=DialogFamily!.Designation TValue="string?" FloatLabelType="FloatLabelType.Always" Placeholder=@(IsSubfamily ? "Entrer la sous-famille":"Entrer la famille")></SfTextBox>
+                            <ValidationMessage For="@(()=>DialogFamily!.Designation)"></ValidationMessage>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="validation-message">@DialogValidationMessage</div>
+                <DialogButtons>
+                    <DialogButton Content=@(IsAddDialog ? "Ajouter" :"Modifier") IsPrimary="true" OnClick="@(IsAddDialog ? CreateFamilyClick : EditFamilyClick)" />
+                </DialogButtons>
+            </EditForm>
+        </Content>
+
+    </DialogTemplates>
+    
+</SfDialog>

@@ -1,0 +1,31 @@
+﻿@using Syncfusion.Blazor.Lists
+@inherits LayoutComponentBase
+
+<div class="page">
+    <SfSidebar Width="220px" DockSize="60px" EnableDock="true" Type="@SidebarType.Auto" @bind-IsOpen="SidebarToggle" Animate=false EnableGestures=false>
+        <ChildContent>
+            <div class="top-row d-flex align-items-center @(SidebarToggle ? "justify-content-between": "justify-content-center")" @onclick=ToggleSidebar>
+                <span class="navbar-brand m-0 sidebar-icon @(SidebarToggle ? "": "d-none") icon-left-arrow"></span>
+                <a class="navbar-brand m-0 @(SidebarToggle ? "": "d-none")" href="">Norexia</a>
+                <span class="navbar-brand m-0 sidebar-icon @(SidebarToggle ? "d-none": "") icon-right-arrow"></span>
+            </div>
+            <div class="flex-grow-1">
+                <SfListView DataSource="@MainList" TValue="ListData" CssClass="e-template-list" ShowIcon="true">
+                    <ListViewFieldSettings TValue="ListData" Id="Id" Text="Text" IconCss="IconCss"></ListViewFieldSettings>
+                    <ListViewEvents TValue="ListData" Clicked="OnSelect"></ListViewEvents>
+                </SfListView>
+            </div>
+            <hr class="m-0"/>
+            <div>
+                <SfListView DataSource="@FooterList" TValue="ListData" CssClass="e-template-list" ShowIcon="true">
+                    <ListViewFieldSettings TValue="ListData" Id="Id" Text="Text" IconCss="IconCss"></ListViewFieldSettings>
+                    <ListViewEvents TValue="ListData" Clicked="OnSelect"></ListViewEvents>
+                </SfListView>
+            </div>
+        </ChildContent>
+    </SfSidebar>
+
+    <main>
+        @Body
+    </main>
+</div>

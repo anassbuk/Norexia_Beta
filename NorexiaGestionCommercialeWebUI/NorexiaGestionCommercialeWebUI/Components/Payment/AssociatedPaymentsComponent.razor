@@ -1,0 +1,25 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <SfGrid AllowResizing=true DataSource="@AssociatedPayments">
+            <GridColumns>
+                <GridColumn Field=@nameof(PaymentDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.Reference) HeaderText="Référence" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.EntryDate) HeaderText="Date création" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.DueDate) HeaderText="Date d'échéance" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.OperationDate) HeaderText="Date opération" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.PaymentMeanName) HeaderText="Moyen de paiement" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.AmountToBePaid) HeaderText="Montant à régler" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.AmountPaid) HeaderText="Montant reglé" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PaymentDto.Status) HeaderText="Statut" MinWidth="120px" AllowEditing=false></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

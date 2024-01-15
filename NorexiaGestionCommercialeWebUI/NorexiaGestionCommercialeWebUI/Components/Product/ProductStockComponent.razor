@@ -1,0 +1,29 @@
+﻿@using Syncfusion.Blazor.Inputs;
+
+<div class="row">
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=ProductCommand!.StorageSupplyInfo!.Quantity TValue="int?" Min=0 Step=1 Placeholder="Quantité disponible" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+
+        <ValidationMessage For="@(() => ProductCommand!.StorageSupplyInfo!.Quantity)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=ProductCommand.StorageSupplyInfo.MinimumStock TValue="int?" Min=0 Step=1 Placeholder="Stock min" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+
+        <ValidationMessage For="@(() => ProductCommand!.StorageSupplyInfo!.MinimumStock)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=ProductCommand.StorageSupplyInfo.MaximumStock TValue="int?" Min=0 Step=1 Placeholder="Stock max" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+
+        <ValidationMessage For="@(() => ProductCommand!.StorageSupplyInfo!.MaximumStock)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=ProductCommand.StorageSupplyInfo.SafetyStock TValue="int?" Min=0 Step=1 Placeholder="Stock sécurité" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+
+        <ValidationMessage For="@(() => ProductCommand!.StorageSupplyInfo!.SafetyStock)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=ProductCommand.StorageSupplyInfo.RetentionPeriod TValue="int?" Min=0 Step=1 Placeholder="Durée de conservation" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+
+        <ValidationMessage For="@(() => ProductCommand!.StorageSupplyInfo!.RetentionPeriod)"></ValidationMessage>
+    </div>
+</div>

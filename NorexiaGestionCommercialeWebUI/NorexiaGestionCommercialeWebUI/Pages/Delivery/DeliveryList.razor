@@ -1,0 +1,80 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Delivery
+@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Deliveries"
+
+<DeliveryAppBarComponent></DeliveryAppBarComponent>
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=DeliveriesGrid Height="100%" AllowResizing=true DataSource="@Deliveries" AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="DeliveryDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.EntryDate) HeaderText="Date" MinWidth="120px">
+                        <Template>
+                            @{
+                                var date = (context as DeliveryDto)!.EntryDate.ToString("g");
+                                <div>@date</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.DeliveryOrigin) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as DeliveryDto)!.DeliveryOrigin;
+                                if (origin == DeliveryOrigin.SaleOrder)
+                                {
+                                    <div>Commande de vente</div>
+                                }
+                                else if (origin == DeliveryOrigin.DirectCreation)
+                                {
+                                    <div>Création directe</div>
+                                }
+                                else if (origin == DeliveryOrigin.Facture)
+                                {
+                                    <div>Facture</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.SaleOrderRef) HeaderText="Réf Pièce d'origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var entry = (context as DeliveryDto)!;
+                                if (entry.DeliveryOrigin == DeliveryOrigin.SaleOrder)
+                                {
+                                    <div>@entry!.SaleOrderRef</div>
+                                }
+                                else if(entry.DeliveryOrigin == DeliveryOrigin.Facture)
+                                {
+                                    <div>@entry!.InvoiceRef</div>
+                                }
+                                else
+                                {
+                                    <div></div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.CustomerRef) HeaderText="Client" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryDto.DelivererRef) HeaderText="Livreur" MinWidth="120px"></GridColumn>
+                    @*<GridColumn Field=@nameof(StockEntryDto.CreatedBy) HeaderText="Responsable"></GridColumn>*@
+                    <GridColumn Field=@nameof(StockEntryDto.Status) HeaderText="Status" MinWidth="120px"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+<ToastComponent @ref=Toast></ToastComponent>

@@ -1,0 +1,120 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Grids
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=StockEntryCommand!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => StockEntryCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=StockEntryCommand!.EntryDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => StockEntryCommand!.EntryDate)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=StockEntryCommand!.StockEntryOrigin TValue="StockEntryOrigin?" TItem=DropDownStockEntryOrigin Placeholder="Origine" DataSource="ddStockEntryOrigins" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="StockEntryOrigin" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => StockEntryCommand!.StockEntryOrigin)"></ValidationMessage>
+    </div>
+    @if (StockEntryCommand!.StockEntryOrigin == StockEntryOrigin.PurchaseOrder)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=purchaseSearchTerm Placeholder="Référence commande d'achat" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-purchase" Content="Rechercher commande d'achat">
+                        <SfButton id="btn-search-purchase" IconCss="e-icons e-search" OnClick="SearchPurchaseOrder" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-purchase" Content="Ajouter commande d'achat">
+                        <SfButton id="btn-add-purchase" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => StockEntryCommand!.PurchaseOrderId)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="col-6 mt-1 pt-1"></div>
+    }
+
+
+    @if (StockEntryCommand!.StockEntryOrigin == StockEntryOrigin.PurchaseOrder || StockEntryCommand!.StockEntryOrigin == StockEntryOrigin.DirectCreation)
+    {
+        bool isProviderEnabled = StockEntryCommand!.StockEntryOrigin == StockEntryOrigin.PurchaseOrder ? false : true;
+        <div class="col-6 mt-1 pt-1">
+
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=providerSearchTerm Placeholder='Fournisseur' FloatLabelType="FloatLabelType.Auto" Enabled=isProviderEnabled></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-provider" Content="Rechercher fournisseur">
+                        <SfButton id="btn-search-provider" IconCss="e-icons e-search" OnClick="SearchProvider" type="button" Disabled=!isProviderEnabled></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-provider" Content="Ajouter fournisseur">
+                        <SfButton id="btn-add-provider" IconCss="e-icons e-plus" Disabled=!isProviderEnabled></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => StockEntryCommand!.ProviderId)"></ValidationMessage>
+            </div>
+        </div>
+    }
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=StockEntryCommand!.CreatedBy Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => StockEntryCommand!.CreatedBy)"></ValidationMessage>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>
+
+<SfDialog Width="768px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsPurchaseLinesDialogVisible">
+    <DialogTemplates>
+        <Header> Lignes de commande </Header>
+        <Content>
+            <SfGrid @ref=PurchaseLinesGrid DataSource="@PurchaseLines" AllowSelection="true" EnableVirtualization="true" EnableVirtualMaskRow="true" EnableHover="false">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="Syncfusion.Blazor.Grids.SelectionType.Single"></GridSelectionSettings>
+                <GridEditSettings AllowEditing="true"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryLineDto.Reference) HeaderText="Référence" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryLineDto.ShortDesignation) HeaderText="Désignation" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryLineDto.ExpectedQty) HeaderText="Quantité prévue" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@PurchaseLinesDialogOkClick" />
+    </DialogButtons>
+</SfDialog>

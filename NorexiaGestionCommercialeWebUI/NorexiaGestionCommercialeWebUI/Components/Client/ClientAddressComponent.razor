@@ -1,0 +1,88 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Client;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Inputs
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Adresse client</h2>
+        <SfGrid @ref=AddressGrid DataSource="@ClientCommand!.CustomerAddresses" AllowResizing=true Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+            <GridEvents OnActionBegin="OnAddressActionBegin" TValue="CustomerAddressDto"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                <Template>
+                    @{
+                        var address = (context as CustomerAddressDto);
+                        <FluentValidator TValidator="CustomerAddressDtoValidator" />
+                        <div style="min-width:300px">
+                            <div class="form-row">
+                                <div class="form-group mb-2">
+                                    <SfCheckBox Label="Adresse principale" @bind-Checked=@address!.Active></SfCheckBox>
+                                    <ValidationMessage For="@(() => address!.Active)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfDropDownList @bind-Value=address!.AddressType TValue="AddressType?" TItem=DropDownAddressType Placeholder="Type" DataSource="ddAddressTypes" FloatLabelType="FloatLabelType.Auto">
+                                        <DropDownListFieldSettings Value="AddressType" Text="DisplayName"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+                                    <ValidationMessage For="@(() => address!.AddressType)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.StreetAdress Placeholder='Rue' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.StreetAdress)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.Complement Placeholder='Complement' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.Complement)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.ZipCode Placeholder='CP' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.ZipCode)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.Region Placeholder='région' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.Region)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.City Placeholder='Ville' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.City)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=address!.Localisation Placeholder='Localisation' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                                    <ValidationMessage For="@(() => address!.Localisation)"></ValidationMessage>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+                </Template>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(CustomerAddressDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.AddressType) HeaderText="Type" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.StreetAdress) HeaderText="Rue" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.City) HeaderText="Ville" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.Region) HeaderText="Region" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.ZipCode) HeaderText="CP" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.Localisation) HeaderText="Localisation" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.Complement) HeaderText="Complement" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(CustomerAddressDto.Active) HeaderText="Principale" MinWidth="120px">
+                    <Template>
+                        @{
+                            if((context as CustomerAddressDto)!.Active == true)
+                            {
+                                <div>Oui</div>
+                            }
+                            else
+                            {
+                                <div>Non</div>
+                            }
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

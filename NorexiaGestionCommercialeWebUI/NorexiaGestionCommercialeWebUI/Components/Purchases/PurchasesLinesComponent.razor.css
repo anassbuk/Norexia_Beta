@@ -1,0 +1,8 @@
+﻿
+::deep .total {
+    text-align: right;
+}
+
+    ::deep .total span {
+        display: inline-block;
+    }

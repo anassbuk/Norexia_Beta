@@ -1,0 +1,22 @@
+﻿::deep .control-section, .content-wrapper, #container {
+    height: 100%
+}
+
+/*::deep .control-section {
+    display: flex;
+    flex-direction: column;
+    height: 100%
+}
+
+::deep .app-bar {
+    height: 48px;
+}
+
+::deep .content-wrapper {
+    height: 100%;
+    flex-grow: 1;
+}
+
+::deep .content-wrapper, #container {
+    height: 100%
+}*/

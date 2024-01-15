@@ -1,0 +1,77 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Stock/Entries"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=StockEntriesGrid Height="100%" AllowResizing=true DataSource="@StockEntries" AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="StockEntryDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.EntryDate) HeaderText="Date" MinWidth="120px">
+                        <Template>
+                            @{
+                                var date = (context as StockEntryDto)!.EntryDate.ToString("g");
+                                <div>@date</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.StockEntryOrigin) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as StockEntryDto)!.StockEntryOrigin;
+                                if (origin == StockEntryOrigin.PurchaseOrder)
+                                {
+                                    <div>Commande d’achat</div>
+                                }
+                                else if (origin == StockEntryOrigin.DirectCreation)
+                                {
+                                    <div>Création directe</div>
+                                }
+                                else if (origin == StockEntryOrigin.CustomerReturn)
+                                {
+                                    <div>Retour client</div>
+                                }
+                                else if (origin == StockEntryOrigin.InternalTransfer)
+                                {
+                                    <div>Transfert interne</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.PurchaseOrderRef) HeaderText="Réf Pièce d'origine" MinWidth="120px">
+                        <Template>
+
+                            @{
+                                var entry = (context as StockEntryDto)!;
+                                if (entry.StockEntryOrigin == StockEntryOrigin.PurchaseOrder)
+                                {
+                                    <div>@entry!.PurchaseOrderRef</div>
+                                }
+                                else
+                                {
+                                    <div></div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.ProviderRef) HeaderText="Fournisseur" MinWidth="120px"></GridColumn>
+                    @*<GridColumn Field=@nameof(StockEntryDto.CreatedBy) HeaderText="Responsable"></GridColumn>*@
+                    <GridColumn Field=@nameof(StockEntryDto.Status) HeaderText="Status" MinWidth="120px"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+<ToastComponent @ref=Toast></ToastComponent>

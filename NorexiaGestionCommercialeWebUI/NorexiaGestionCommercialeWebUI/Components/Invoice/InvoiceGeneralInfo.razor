@@ -1,0 +1,186 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Grids
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=InvoiceCommand!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => InvoiceCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=InvoiceCommand!.EntryDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto">
+            <DatePickerEvents TValue="DateTimeOffset?" ValueChange="EntryDateValueChange"></DatePickerEvents>
+        </SfDatePicker>
+        <ValidationMessage For="@(() => InvoiceCommand!.EntryDate)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=InvoiceCommand!.InvoiceOrigin TValue="InvoiceOrigin?" TItem=DropDownInvoiceOrigin Placeholder="Origine" DataSource="ddInvoiceOrigins" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="InvoiceOrigin" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => InvoiceCommand!.InvoiceOrigin)"></ValidationMessage>
+    </div>
+
+    @if (InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.DirectCreation)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=InvoiceCommand!.DirectCreationReason Placeholder='Motif' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => InvoiceCommand!.DirectCreationReason)"></ValidationMessage>
+        </div>
+
+        <div class="col-6 mt-1 pt-1">
+            <SfDropDownList @bind-Value=InvoiceCommand!.InvoiceType TValue="InvoiceType?" TItem=DropDownInvoiceType Placeholder="Type" DataSource="ddInvoiceTypes" FloatLabelType="FloatLabelType.Auto">
+                <DropDownListFieldSettings Value="InvoiceType" Text="DisplayName"></DropDownListFieldSettings>
+            </SfDropDownList>
+            <ValidationMessage For="@(() => InvoiceCommand!.InvoiceType)"></ValidationMessage>
+        </div>
+    }
+
+    @if (InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.SalesOrder || InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.DeliveryMulti)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=saleSearchTerm Placeholder="Référence commande de vente" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-sale" Content="Rechercher commande de vente">
+                        <SfButton id="btn-search-sale" IconCss="e-icons e-search" OnClick="SearchSaleOrder" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-sale" Content="Ajouter commande de vente">
+                        <SfButton id="btn-add-sale" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => InvoiceCommand!.SaleOrderId)"></ValidationMessage>
+            </div>
+        </div>
+
+        if (InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.DeliveryMulti)
+        {
+            <div class="col-6 mt-1 pt-1">
+                <SfDatePicker @bind-Value=InvoiceCommand!.DeliveryStartDate Placeholder='Date de début de livraison' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+                <ValidationMessage For="@(() => InvoiceCommand!.DeliveryStartDate)"></ValidationMessage>
+            </div>
+
+            <div class="col-6 mt-1 pt-1">
+                <SfDatePicker @bind-Value=InvoiceCommand!.DeliveryEndDate Placeholder='Date de fin de livraison' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+                <ValidationMessage For="@(() => InvoiceCommand!.DeliveryEndDate)"></ValidationMessage>
+            </div>
+        }
+    }
+
+    @if (InvoiceCommand!.InvoiceOrigin == InvoiceOrigin.DeliveryMono)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=deliverySearchTerm Placeholder="Référence bon de livraison" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-delivery" Content="Rechercher bon de livraison">
+                        <SfButton id="btn-search-delivery" IconCss="e-icons e-search" OnClick="SearchDelivery" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-delivery" Content="Ajouter bon de livraison">
+                        <SfButton id="btn-add-delivery" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => InvoiceCommand!.DeliveryRef)"></ValidationMessage>
+            </div>
+        </div>
+    }
+
+    <div class="col-6 mt-1 pt-1">
+
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1 px-1">
+                <SfTextBox CssClass="flex-grow-1" @bind-Value=customerSearchTerm Placeholder='Client' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            </div>
+            <div class="px-1">
+                <SfTooltip Target="#btn-search-client" Content="Rechercher client">
+                    <SfButton id="btn-search-client" IconCss="e-icons e-search" OnClick="SearchCustomer" type="button"></SfButton>
+                </SfTooltip>
+            </div>
+
+            <div class="px-1">
+                <SfTooltip CssClass="g-1" Target="#btn-add-client" Content="Ajouter client">
+                    <SfButton id="btn-add-client" IconCss="e-icons e-plus"></SfButton>
+                </SfTooltip>
+            </div>
+        </div>
+
+        <div>
+            <ValidationMessage For="@(() => InvoiceCommand!.CustomerId)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=InvoiceCommand!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => InvoiceCommand!.Status)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=InvoiceCommand!.CreatedBy Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => InvoiceCommand!.CreatedBy)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=InvoiceCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => InvoiceCommand!.Note)"></ValidationMessage>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>
+
+<SfDialog Width="768px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsSaleLinesDialogVisible">
+    <DialogTemplates>
+        <Header> Lignes de commande </Header>
+        <Content>
+            <SfGrid @ref=SaleLinesGrid DataSource="@SaleLines" AllowSelection="true" AllowResizing=true EnableVirtualization="true" EnableVirtualMaskRow="true" EnableHover="false">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="Syncfusion.Blazor.Grids.SelectionType.Single"></GridSelectionSettings>
+                <GridEditSettings AllowEditing="true"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.DeliveryRef) HeaderText="Référence de livraison" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Reference) HeaderText="Référence produit" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.ShortDesignation) HeaderText="Désignation" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.ExpectedQty) HeaderText="Quantité prévue" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.Price) HeaderText="Prix ​​unitaire HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.TotalPriceExcludingTax) HeaderText="Total HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceLineDto.TotalPriceIncludingTax) HeaderText="Total TTC" Format="N2" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@SaleLinesDialogOkClick" />
+    </DialogButtons>
+</SfDialog>

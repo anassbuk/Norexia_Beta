@@ -1,0 +1,35 @@
+﻿@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+<h2 class="section-header">Gestion des unités</h2>
+
+<SfGrid @ref=UnitListGrid DataSource="@UnitList" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+    <GridEvents OnActionBegin="OnUnitActionBegin" RowSelected="RowSelectHandler" TValue="UnitDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(UnitDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(UnitDto.Name) HeaderText="Unité" ValidationRules="@(new ValidationRules{ Required= true })"></GridColumn>
+    </GridColumns>
+</SfGrid>
+
+<SfGrid DataSource="@UnitMeasurementList" AllowPaging="true" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+    <GridEvents OnActionBegin="OnUnitMeasurementActionBegin" TValue="UnitMeasurementDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(UnitMeasurementDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(UnitMeasurementDto.Name) HeaderText="Unité de mesure" ValidationRules="@(new ValidationRules{ Required= true })"></GridColumn>
+    </GridColumns>
+</SfGrid>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogValidationMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

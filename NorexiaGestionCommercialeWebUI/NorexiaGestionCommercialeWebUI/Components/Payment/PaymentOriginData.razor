@@ -1,0 +1,71 @@
+﻿@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Calendars
+
+<div class="row">
+    @if (PaymentCommand!.PaymentOrigin == Norexia.Core.Facade.Client.Sdk.PaymentOrigin.Invoice && InvoiceInfo != null)
+    {
+        <div class="col-4 mt-1 pt-1">
+            <SfTextBox @bind-Value=InvoiceInfo!.Reference Placeholder='Référence Facture' FloatLabelType="FloatLabelType.Auto" Enabled=false></SfTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfDatePicker @bind-Value=InvoiceInfo!.EntryDate Placeholder='Date Facture' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfDatePicker>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfDatePicker @bind-Value=InvoiceInfo!.DueDate Placeholder="Date d'échéance" FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfDatePicker>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=InvoiceInfo.TotalPriceIncludingVAT TValue="double?" Min=0 Placeholder='Montant Net' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=InvoiceInfo.SettledAmount TValue="double?" Min=0 Placeholder='Montant Régle' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=InvoiceInfo.RemainingAmount TValue="double?" Min=0 Placeholder='Montant Réstant' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=InvoiceInfo!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto" Enabled=false></SfTextBox>
+        </div>
+    }
+    else if (PaymentCommand!.PaymentOrigin == Norexia.Core.Facade.Client.Sdk.PaymentOrigin.SaleOrder && SaleInfo != null)
+    {
+
+        <div class="col-4 mt-1 pt-1">
+            <SfTextBox @bind-Value=SaleInfo!.Reference Placeholder='Référence Commande de vente' FloatLabelType="FloatLabelType.Auto" Enabled=false></SfTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfDatePicker @bind-Value=SaleInfo!.EntryDate Placeholder='Date Commande de vente' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfDatePicker>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=SaleInfo.TotalPriceIncludingVAT TValue="double?" Min=0 Placeholder='Montant Net' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=SaleInfo.SettledAmount TValue="double?" Min=0 Placeholder='Montant Régle' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=SaleInfo.RemainingAmount TValue="double?" Min=0 Placeholder='Montant Réstant' FloatLabelType="FloatLabelType.Auto" Enabled=false>
+            </SfNumericTextBox>
+        </div>
+
+        <div class="col-4 mt-1 pt-1">
+            <SfTextBox @bind-Value=SaleInfo!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto" Enabled=false></SfTextBox>
+        </div>
+    }
+</div>

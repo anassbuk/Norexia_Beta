@@ -1,0 +1,34 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using Syncfusion.Blazor.Grids
+@using Norexia.Core.Facade.Client.Sdk
+@using Syncfusion.Blazor.Inputs;
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+
+<h2 class="section-header">Gestion des groupes de prix</h2>
+
+<SfGrid DataSource="@PriceGroupList" Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog">
+        <Template>
+            @{
+                <FluentValidator TValidator="PriceGroupDtoValidator"></FluentValidator>
+                var group = (context as PriceGroupDto);
+                <div>
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <SfTextBox @bind-Value=group!.Name Placeholder="désignation" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+                            <ValidationMessage For="@(()=>group!.Name)"></ValidationMessage>
+                        </div>
+                    </div>
+
+                    <div class="validation-message">@DialogValidationMessage</div>
+                </div>
+            }
+        </Template>
+    </GridEditSettings>
+    <GridEvents OnActionBegin="OnPriceGroupActionBegin" TValue="PriceGroupDto"></GridEvents>
+    <GridColumns>
+        <GridColumn Field=@nameof(PriceGroupDto.Id) IsPrimaryKey="true" TextAlign="TextAlign.Right" Visible=false></GridColumn>
+        <GridColumn Field=@nameof(PriceGroupDto.Name) HeaderText="Groupe de prix"></GridColumn>
+    </GridColumns>
+</SfGrid>

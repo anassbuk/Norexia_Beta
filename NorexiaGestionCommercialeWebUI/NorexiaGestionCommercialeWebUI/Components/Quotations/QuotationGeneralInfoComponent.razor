@@ -1,0 +1,118 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=QuotationCommand!.Reference Placeholder="N° Devis" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => QuotationCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class ="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value="QuotationCommand!.QuotationDate" Placeholder="Dtae" FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => QuotationCommand!.QuotationDate)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value="QuotationCommand!.ValidityDuretion" Placeholder="Durée de validité" Min="0" FloatLabelType="FloatLabelType.Auto"></SfNumericTextBox>
+        <ValidationMessage For="@(() => QuotationCommand!.ValidityDuretion)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=QuotationCommand!.Responsable Placeholder='Etabli par' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => QuotationCommand!.Responsable)"></ValidationMessage>
+
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value="QuotationCommand!.Version" Placeholder="N° version" Min="1" FloatLabelType="FloatLabelType.Auto"></SfNumericTextBox>
+        <ValidationMessage For="@(() => QuotationCommand!.Version)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <div class="px-1">
+            <SfCheckBox Label="Client passagé" @bind-Checked="isPassing"></SfCheckBox>
+        </div>
+        @if (!isPassing)
+        {
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=clientSearchTerm Placeholder='Référence | Raison sociale | Nom' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-client" Content="Rechercher client">
+                        <SfButton id="btn-search-client" IconCss="e-icons e-search" OnClick="SearchClient" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-client" Content="Ajouter client">
+                        <SfButton id="btn-add-client" IconCss="e-icons e-plus" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-edit-client" Content="Editer client">
+                        <SfButton id="btn-edit-client" IconCss="e-icons e-edit" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+        }
+        <div>
+            <ValidationMessage For="@(() => QuotationCommand!.CustomerId)"></ValidationMessage>
+        </div>
+    </div>
+    @if (!isPassing)
+    {
+        <div class="col-6 mt-1 pt-1">
+
+            <label class="address-headertext">Adresse de facturation</label>
+            <div class="border rounded p-1 bg-value-card">
+                @if (BillingCustomerAddress != null)
+                {
+                    <div class='e-list-content w-100'>@BillingCustomerAddress.StreetAdress</div>
+                    <span class='e-list-content'>@BillingCustomerAddress.ZipCode,</span>
+                    <span class='e-list-content'> @BillingCustomerAddress.City</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-1 pt-1">
+            <label class="address-headertext">Adresse de livraison</label>
+            <div class="border rounded p-1 bg-value-card">
+                @if (DeliveryCustomerAddress != null)
+                {
+                    <div class='e-list-content w-100'>@DeliveryCustomerAddress.StreetAdress</div>
+                    <span class='e-list-content'>@DeliveryCustomerAddress.ZipCode,</span>
+                    <span class='e-list-content'> @DeliveryCustomerAddress.City</span>
+                }
+            </div>
+        </div>
+    }
+
+
+</div>
+<div class="col-6 mt-1 pt-1">
+    <SfTextBox @bind-Value=QuotationCommand!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    <ValidationMessage For="@(() => QuotationCommand!.Status)"></ValidationMessage>
+</div>
+<div class="col-12 mt-1 pt-1">
+    <SfTextBox @bind-Value=QuotationCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    <ValidationMessage For="@(() => QuotationCommand!.Note)"></ValidationMessage>
+</div>
+
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

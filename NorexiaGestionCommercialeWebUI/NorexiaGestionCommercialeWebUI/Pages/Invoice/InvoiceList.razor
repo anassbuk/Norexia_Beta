@@ -1,0 +1,85 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Delivery
+@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Invoices"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=InvoicesGrid Height="100%" AllowResizing=true DataSource="@Invoices" AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="InvoiceDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.EntryDate) HeaderText="Date" MinWidth="120px">
+                        <Template>
+                            @{
+                                var date = (context as InvoiceDto)!.EntryDate.ToString("g");
+                                <div>@date</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.InvoiceOrigin) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as InvoiceDto)!.InvoiceOrigin;
+                                if (origin == InvoiceOrigin.SalesOrder)
+                                {
+                                    <div>Commande de vente</div>
+                                }
+                                else if (origin == InvoiceOrigin.DirectCreation)
+                                {
+                                    <div>Création directe</div>
+                                }
+                                else if (origin == InvoiceOrigin.DeliveryMono)
+                                {
+                                    <div>Bon de livraison (Mono)</div>
+                                }
+                                else if (origin == InvoiceOrigin.DeliveryMulti)
+                                {
+                                    <div>Bons de livraison (Multi)</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.DirectCreationReason) HeaderText="Motif" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.SaleOrderRef) HeaderText="Réf Pièce d'origine" MinWidth="120px">
+                        <Template>
+
+                            @{
+                                var entry = (context as InvoiceDto)!;
+                                if (entry.InvoiceOrigin == InvoiceOrigin.SalesOrder || entry.InvoiceOrigin == InvoiceOrigin.DeliveryMulti)
+                                {
+                                    <div>@entry!.SaleOrderRef</div>
+                                }
+                                else if(entry.InvoiceOrigin == InvoiceOrigin.DeliveryMono)
+                                {
+                                    <div>@entry!.DeliveryRef</div>
+                                }
+                                else
+                                {
+                                    <div></div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.CustomerRef) HeaderText="Client" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.TotalPriceIncludingVAT) HeaderText="Net à payer" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.SettledAmount) HeaderText="Montant réglé" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(InvoiceDto.RemainingAmount) HeaderText="Montant restant" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(StockEntryDto.Status) HeaderText="Status" MinWidth="120px"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+<ToastComponent @ref=Toast></ToastComponent>

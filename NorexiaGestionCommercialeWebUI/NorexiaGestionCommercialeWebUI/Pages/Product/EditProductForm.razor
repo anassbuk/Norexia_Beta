@@ -1,0 +1,77 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components.Product
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Products/{Id:guid}/{ShortDesignation?}"
+
+<EditForm EditContext="EC" OnSubmit="SaveProduct">
+    <FluentValidator TValidator="ProductCommandValidator" />
+    <ProductFormAppBarComponent></ProductFormAppBarComponent>@*OnSaveProductClicked=SaveProduct*@
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <ValidationSummary></ValidationSummary>
+                        <ProductGeneralInformationComponent @bind-ProductCommand=ProductCommand></ProductGeneralInformationComponent>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        <SfTab @ref="SfTab" LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>Identification</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <ProductIdentificationComponent @ref=productIdentificationComponent @bind-ProductCommand=ProductCommand ProductAvailablities="ProductAvailablities"></ProductIdentificationComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Classification</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <ProductClassificationComponent @ref=productClassificationComponent @bind-ProductCommand=ProductCommand Classes="Classes" Families="Families"></ProductClassificationComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <ChildContent>
+                                        <TabHeader Text="Unités"></TabHeader>
+                                    </ChildContent>
+                                    <ContentTemplate>
+                                        <ProductUnitComponent @ref=productUnitComponent @bind-ProductCommand=ProductCommand Units="Units"></ProductUnitComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <ChildContent>
+                                        <TabHeader Text="Tarifs"></TabHeader>
+                                    </ChildContent>
+                                    <ContentTemplate>
+                                        <ProductSalesComponent @ref=productSalesComponent @bind-ProductCommand=ProductCommand DefaultPriceGroupId="DefaultPriceGroupId" PriceGroups="PriceGroups"></ProductSalesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <ChildContent>
+                                        <TabHeader Text="Stock"></TabHeader>
+                                    </ChildContent>
+                                    <ContentTemplate>
+                                        <ProductStockComponent @bind-ProductCommand=ProductCommand></ProductStockComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

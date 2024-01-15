@@ -1,0 +1,90 @@
+.top-row {
+    height: 44px;
+    background-color: rgba(0,0,0,0.4);
+    padding: 7px 9px 7px 12px;
+    cursor: pointer;
+}
+.navbar-brand {
+    color: #fff;
+}
+
+main {
+    width: auto !important;
+}
+
+::deep .sidebar-icon {
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
+
+::deep .icon-right-arrow {
+    background-image: url(images/sidebar/right-arrow.png) !important;
+    height: 24px !important;
+    width: 24px !important;
+}
+
+::deep .icon-left-arrow {
+    background-image: url(images/sidebar/left-arrow.png) !important;
+    height: 24px !important;
+    width: 24px !important;
+}
+
+
+::deep .icon-home {
+    background-image: url(images/sidebar/home.svg) !important;
+}
+
+::deep .icon-setting {
+    background-image: url(images/sidebar/setting.png) !important;
+}
+
+::deep .icon-product {
+    background-image: url(images/sidebar/product.png) !important;
+}
+
+::deep .icon-people {
+    background-image: url(images/sidebar/customer.png) !important;
+}
+
+::deep .icon-sales {
+    background-image: url(images/sidebar/shopping-cart.png) !important;
+}
+
+::deep .icon-delivery {
+    background-image: url(images/sidebar/delivery.png) !important;
+}
+
+::deep .icon-invoice {
+    background-image: url(images/sidebar/invoice.png) !important;
+}
+
+::deep .icon-payment {
+    background-image: url(images/sidebar/payment.png) !important;
+}
+
+::deep .e-listview .e-list-icon {
+    width: 24px !important;
+}
+
+::deep .e-sidebar.e-left {
+    border-right: 1px solid #C9CCD2 !important;
+}
+::deep .e-listview:not(.e-list-template) .e-list-item {
+    height: 50px;
+}
+
+::deep .e-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+::deep .e-listview .e-text-content {
+    display: flex;
+    align-items: center;
+}
+
+::deep .e-sidebar.e-left.e-close .e-list-icon {
+    margin-right: 0;
+}

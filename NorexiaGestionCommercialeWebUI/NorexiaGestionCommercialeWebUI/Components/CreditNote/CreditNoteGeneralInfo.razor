@@ -1,0 +1,120 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Grids
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=CreditNoteCommand!.CreditNumber Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => CreditNoteCommand!.CreditNumber)" />
+    </div>
+
+     <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=CreditNoteCommand!.CreditNoteDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => CreditNoteCommand!.CreditNoteDate)" />
+     </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=CreditNoteCommand!.CreditOrigin TValue=CreditOrigin? TItem="DropDownCreditOrigin" Placeholder="Origine" DataSource="ddCreditOrigins" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="CreditOrigin" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => CreditNoteCommand!.CreditOrigin)"></ValidationMessage>
+    </div>
+
+    @if (CreditNoteCommand!.CreditOrigin == CreditOrigin.Invoice)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=InvoiceSearchTerm Placeholder="Référence Facture" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-sale" Content="Rechercher Facture">
+                        <SfButton id="btn-search-sale" IconCss="e-icons e-search" OnClick="SearchInvoice" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => CreditNoteCommand!.InvoiceId)"></ValidationMessage>
+            </div>
+        </div>
+    }
+
+   
+    @if(CreditNoteCommand.CustomerId != null)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=CreditNoteCommand!.CustomerRef Placeholder='Client' FloatLabelType="FloatLabelType.Auto" Enabled=false></SfTextBox>
+            <ValidationMessage For="@(() => CreditNoteCommand!.CustomerId)" />
+        </div>
+    }
+    @* <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=CreditNoteCommand!.Action Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => CreditNoteCommand!.Action)"></ValidationMessage>
+    </div> *@
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=CreditNoteCommand!.CreditAction TValue=CreditAction? TItem="DropDownCreditAction" Placeholder="Action" DataSource="ddCreditActions" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="CreditAction" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => CreditNoteCommand!.CreditOrigin)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=CreditNoteCommand!.Responsable Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => CreditNoteCommand!.Responsable)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=CreditNoteCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => CreditNoteCommand!.Note)"></ValidationMessage>
+    </div>
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=CreditNoteCommand!.Raison Multiline=true Placeholder='Raison' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => CreditNoteCommand!.Raison)"></ValidationMessage>
+    </div>
+</div>
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>
+
+<SfDialog Width="768px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsSaleLinesDialogVisible">
+    <DialogTemplates>
+        <Header> Lignes de commande </Header>
+        <Content>
+            <SfGrid @ref=InvoiceLinesGrid DataSource="@InvoiceLines" AllowSelection="true" AllowResizing=true EnableVirtualization="true" EnableVirtualMaskRow="true" EnableHover="false">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="Syncfusion.Blazor.Grids.SelectionType.Multiple"></GridSelectionSettings>
+                <GridEditSettings AllowEditing="true"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.DeliveryRef) HeaderText="Référence de livraison" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.Reference) HeaderText="Référence produit" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.ShortDesignation) HeaderText="Désignation" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.ExpectedQty) HeaderText="Quantité prévue" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.Price) HeaderText="Prix ​​unitaire HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.TotalPriceExcludingTax) HeaderText="Total HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.TotalPriceIncludingTax) HeaderText="Total TTC" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.Vat) HeaderText="TVA" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(CreditNoteLineDto.Discount) HeaderText="Remise" Format="N2" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@SaleLinesDialogOkClick" />
+    </DialogButtons>
+</SfDialog>

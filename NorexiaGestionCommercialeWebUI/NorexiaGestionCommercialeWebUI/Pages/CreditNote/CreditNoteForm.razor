@@ -1,0 +1,57 @@
+﻿@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.CreditNote;
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using NorexiaGestionCommercialeWebUI.Components.CreditNote
+@using Syncfusion.Blazor.Notifications
+
+@page "/CreditNotes/New"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="CreditNoteCommandValidator" />
+    <CreditNoteAppBarCompoenet></CreditNoteAppBarCompoenet>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <CreditNoteGeneralInfo @bind-CreditNoteCommand=CreditNoteCommand EC="EC"></CreditNoteGeneralInfo>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+
+                    <CardContent>
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate> Lignes davoir</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <CreditNoteLinesComponent  @bind-CreditNoteCommand=CreditNoteCommand PriceGroups="PriceGroups" DefaultPriceGroupId="DefaultPriceGroupId"></CreditNoteLinesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+
+                                <TabItem>
+                                    <HeaderTemplate>Conditions de paiement</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <CreditNotePaymentInfoComponent  @bind-CreditNoteCommand=CreditNoteCommand ></CreditNotePaymentInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</EditForm>
+<ToastComponent @ref=Toast></ToastComponent>

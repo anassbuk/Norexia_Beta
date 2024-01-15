@@ -1,0 +1,63 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Client;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components.Product
+@using NorexiaGestionCommercialeWebUI.Components.Client
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+
+@page "/Clients/{Id:guid}"
+
+<EditForm EditContext="EC" OnSubmit="SaveClient">
+    <FluentValidator TValidator="ClientCommandValidator" />
+    <ClientFormAppBarComponent></ClientFormAppBarComponent>@*OnSaveClientClicked=SaveClient*@
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <ValidationSummary></ValidationSummary>
+                        <ClientGeneralInformationComponent @bind-ClientCommand=ClientCommand CustomerCategories="CustomerCategories"></ClientGeneralInformationComponent>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem Visible="@(ClientCommand!.ClientType == ClientType.Company)">
+                                    <HeaderTemplate>Coordonnées</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <CompanyContactDetailsComponent @bind-ClientCommand=ClientCommand></CompanyContactDetailsComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Contact</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <ClientContactInformationComponent @bind-ClientCommand=ClientCommand></ClientContactInformationComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <ChildContent>
+                                        <TabHeader Text="Adresses"></TabHeader>
+                                    </ChildContent>
+                                    <ContentTemplate>
+                                        <ClientAddressComponent @bind-ClientCommand=ClientCommand></ClientAddressComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

@@ -1,0 +1,34 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Settings
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/GeneralSettings"
+
+<SettingAppBarComponent/>
+<PageTitle>General settings</PageTitle>
+
+<SfTab CssClass="default-tab e-fill">
+    <TabAnimationSettings>
+        <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
+        <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
+    </TabAnimationSettings>
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="TVA"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <VATSettings VATs=VATs OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></VATSettings>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Devise"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <CurrencySettings Currencies=Currencies OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></CurrencySettings>
+            </ContentTemplate>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+<ToastComponent @ref=Toast></ToastComponent>

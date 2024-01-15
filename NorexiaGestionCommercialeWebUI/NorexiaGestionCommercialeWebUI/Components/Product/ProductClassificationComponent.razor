@@ -1,0 +1,63 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Class;
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SelectedFamilyId FloatLabelType="FloatLabelType.Auto" TValue="Guid" TItem="FamilyDto" Placeholder="Sélectionner la famille" DataSource="@Families">
+            <DropDownListFieldSettings Value="FamilyId" Text="Designation"></DropDownListFieldSettings>
+            <DropDownListEvents OnValueSelect="OnFamilyChanged" TValue="Guid" TItem="FamilyDto"></DropDownListEvents>
+        </SfDropDownList>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=ProductCommand!.ClassificationInfo!.FamilyId FloatLabelType="FloatLabelType.Auto" TValue="Guid?" TItem="FamilyDto" Placeholder="Sélectionner la sous famille" DataSource="@SubFamilies">
+            <DropDownListFieldSettings Value="FamilyId" Text="Designation"></DropDownListFieldSettings>
+        </SfDropDownList>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Autres classification</h2>
+        <SfGrid DataSource="@ClassValues" AllowResizing=true Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+            <GridEvents OnActionComplete="OnClassActionComplete" OnActionBegin="OnClassActionBegin" TValue="ClassValue"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                <Template>
+                    @{
+                        var classValue = (context as ClassValue);
+                        <div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <SfDropDownList @bind-Value=classValue!.ClassId FloatLabelType=FloatLabelType.Auto TItem="ClassDto" TValue="Guid" DataSource="@Classes" Placeholder="Sélectionner la classe">
+                                        <DropDownListFieldSettings Value="Id" Text="Key"></DropDownListFieldSettings>
+                                        <DropDownListEvents OnValueSelect="OnClassChanged" TValue="Guid" TItem="ClassDto"></DropDownListEvents>
+                                    </SfDropDownList>
+
+                                    <ValidationMessage For="@(()=>classValue!.ClassId)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfDropDownList @bind-Value=classValue!.ClassValueId TItem="ClassValueDto" TValue="Guid" DataSource="@SelectedClass!.Values" FloatLabelType="FloatLabelType.Auto" Placeholder="Sélectionner la valeur">
+                                        <DropDownListFieldSettings Value="Id" Text="Value"></DropDownListFieldSettings>
+                                    </SfDropDownList>
+
+                                    <ValidationMessage For="@(()=>classValue!.ClassValueId)"></ValidationMessage>
+                                </div>
+                            </div>
+
+                            <div class="validation-message">@DialogValidationMessage</div>
+                        </div>
+                        <FluentValidator TValidator="ClassValueValidator"></FluentValidator>
+                    }
+                </Template>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(ClassValue.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(ClassValue.ClassId) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(ClassValue.ClassKey) HeaderText="Classe" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(ClassValue.ClassValueId) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(ClassValue.Value) HeaderText="Valeur" MinWidth="120px"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Settings
+@using Syncfusion.Blazor.Grids;
+@using Syncfusion.Blazor.TreeGrid
+@using System.ComponentModel.DataAnnotations
+@using Syncfusion.Blazor.Notifications
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/SalesSettings"
+
+<SettingAppBarComponent />
+<PageTitle>Sales settings</PageTitle>
+
+
+<SfTab CssClass="default-tab e-fill">
+    <TabAnimationSettings>
+        <TabAnimationPrevious Effect=AnimationEffect.None></TabAnimationPrevious>
+        <TabAnimationNext Effect=AnimationEffect.None></TabAnimationNext>
+    </TabAnimationSettings>
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Groupes de prix"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <PriceGroupSettings OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></PriceGroupSettings>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Canaux de vente"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <ProductAvailabilitySettings OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></ProductAvailabilitySettings>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Modalités de paiement"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <PaymentTermsSettings OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></PaymentTermsSettings>
+                <PaymentMeansSettings OnShowErrorToast="ShowErrorToast" OnShowSuccessToast="ShowSuccessToast"></PaymentMeansSettings>
+            </ContentTemplate>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+<ToastComponent @ref=Toast></ToastComponent>

@@ -1,0 +1,66 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Products"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=ProductsGrid DataSource="@Products" Height="100%" AllowResizing=true AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnToolbarClick="ToolbarClickHandler" OnActionBegin="OnProductActionBegin" TValue="ProductDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.ShortDesignation) HeaderText="Designation" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.Type) MinWidth="120px" FilterSettings="@(new FilterSettings { Type = Syncfusion.Blazor.Grids.FilterType.Menu })"></GridColumn>
+                    <GridColumn Field=Family.Designation HeaderText="Famille" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=SubFamily.Designation HeaderText="Sous-Famille" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.DefaultSalePrice_TaxeExcluded) HeaderText="Prix HT" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.DefaultSalePrice_TaxeIncluded) HeaderText="Prix TTC" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=StorageSupplyInfo.Quantity HeaderText="Quantité disponible"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.Action) FilterSettings="@(new FilterSettings { Type = Syncfusion.Blazor.Grids.FilterType.CheckBox })"></GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.Active) HeaderText="Actif" FilterSettings="@(new FilterSettings { Type = Syncfusion.Blazor.Grids.FilterType.CheckBox })" ClipMode="ClipMode.EllipsisWithTooltip">
+                        <Template>
+                            @{
+                                var product = (context as ProductDto);
+                                @if (product!.Active == true)
+                                {
+                                    <div>Oui</div>
+                                }
+                                else
+                                {
+                                    <div>Non</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(ProductDto.MultiPrice) HeaderText="Multi prix" FilterSettings="@(new FilterSettings { Type = Syncfusion.Blazor.Grids.FilterType.CheckBox })" ClipMode="ClipMode.EllipsisWithTooltip">
+                        <Template>
+                            @{
+                                var product = (context as ProductDto);
+                                @if (product!.MultiPrice)
+                                {
+                                    <div>Oui</div>
+                                }
+                                else
+                                {
+                                    <div>Non</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+<ToastComponent @ref=Toast></ToastComponent>

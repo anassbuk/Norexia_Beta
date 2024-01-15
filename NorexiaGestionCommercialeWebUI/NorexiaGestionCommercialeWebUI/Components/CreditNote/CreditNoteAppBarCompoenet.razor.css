@@ -1,0 +1,16 @@
+﻿::deep .e-appbar {
+    border-bottom: 1px solid #C9CCD2 !important;
+    box-shadow: none;
+}
+
+    ::deep .e-appbar > div:first-child {
+        width: auto;
+    }
+
+::deep .e-breadcrumb {
+    width: 100%;
+}
+
+::deep .breadcrumb-bar {
+    height: 35px;
+}

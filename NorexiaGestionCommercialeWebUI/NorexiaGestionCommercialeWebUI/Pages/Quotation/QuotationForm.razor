@@ -1,0 +1,62 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Quotation;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using NorexiaGestionCommercialeWebUI.Components.Quotations
+@using Syncfusion.Blazor.Notifications
+
+@page "/Quotations/New"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="QuotationCommandValidator" />
+    <QuotationsFormAppBarComponent></QuotationsFormAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <QuotationGeneralInfoComponent @bind-QuotationCommand="QuotationCommand"></QuotationGeneralInfoComponent>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+                    <CardContent>
+                        
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>Lignes Devis</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <QuotationLinesComponent @bind-QuotationCommand="QuotationCommand" PriceGroups="PriceGroups" DefaultPriceGroupId="DefaultPriceGroupId"></QuotationLinesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Livraison</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <QuotationDeliveryInfoComponent @bind-QuotationCommand=QuotationCommand></QuotationDeliveryInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Modalités de paiement</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <QuotationPaymentInfoComponent DefaultPaymentTerms="DefaultPaymentTerms" @bind-QuotationCommand=QuotationCommand></QuotationPaymentInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+<ToastComponent @ref=Toast></ToastComponent>

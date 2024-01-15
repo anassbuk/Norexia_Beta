@@ -1,0 +1,25 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs;
+
+<div class="row">
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ClientCommand!.CompanyTel Placeholder="Tel" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ClientCommand!.CompanyTel)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ClientCommand!.CompanyEmail Placeholder="Email" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ClientCommand!.CompanyEmail)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ClientCommand!.WebSite Placeholder="Site web" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ClientCommand!.WebSite)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ClientCommand!.CompanyFax Placeholder="Fax" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ClientCommand!.CompanyFax)"></ValidationMessage>
+    </div>
+    <div class="form-group col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ClientCommand!.Location Placeholder="Localisation" FloatLabelType="@FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ClientCommand!.Location)"></ValidationMessage>
+    </div>
+</div>

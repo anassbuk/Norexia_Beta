@@ -1,0 +1,68 @@
+﻿@using NorexiaGestionCommercialeWebUI.Components.Delivery
+@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Payments"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+
+            <SfGrid @ref=PaymentsGrid AllowResizing=true Height="100%" DataSource="@Payments" AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="PaymentDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.Reference) HeaderText="Référence" MinWidth="120px" AllowEditing=false></GridColumn>
+
+                    <GridColumn Field=@nameof(PaymentDto.PaymentOrigin) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as PaymentDto)!.PaymentOrigin;
+                                if (origin == PaymentOrigin.Invoice)
+                                {
+                                    <div>Facture</div>
+                                }
+                                else if (origin == PaymentOrigin.SaleOrder)
+                                {
+                                    <div>Commande de vente</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.InvoiceRef) HeaderText="Réf Pièce d'origine" MinWidth="120px">
+                        <Template>
+
+                            @{
+                                var entry = (context as PaymentDto)!;
+                                if (entry.PaymentOrigin == PaymentOrigin.Invoice)
+                                {
+                                    <div>@entry!.InvoiceRef</div>
+                                }
+                                else
+                                {
+                                    <div>@entry!.SaleOrderRef</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.EntryDate) HeaderText="Date création" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.DueDate) HeaderText="Date d'échéance" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.OperationDate) HeaderText="Date opération" MinWidth="120px" AllowEditing=false Format="g"></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.PaymentMeanName) HeaderText="Moyen de paiement" MinWidth="120px" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.AmountToBePaid) HeaderText="Montant à régler" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.AmountPaid) HeaderText="Montant reglé" Format="N2" MinWidth="120" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(PaymentDto.Status) HeaderText="Statut" MinWidth="120px" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+<ToastComponent @ref=Toast></ToastComponent>

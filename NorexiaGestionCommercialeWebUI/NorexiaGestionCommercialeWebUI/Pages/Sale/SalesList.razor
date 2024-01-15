@@ -1,0 +1,59 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Sales"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=SaleOrdersGrid Height="100%" DataSource="@SaleOrders" AllowResizing=true AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="SaleOrderDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+
+                    <GridColumn Field=@nameof(SaleOrderDto.SaleOrderOrigin) HeaderText="Origine" MinWidth="120px">
+                        <Template>
+                            @{
+                                var origin = (context as SaleOrderDto)!.SaleOrderOrigin;
+                                if (origin == SaleOrderOrigin.Quotation)
+                                {
+                                    <div>Devis</div>
+                                }
+                                else if (origin == SaleOrderOrigin.DirectCreation)
+                                {
+                                    <div>Création directe</div>
+                                }
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.QuotationRef) HeaderText="Réf Pièce d'origine" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.OrderDate) HeaderText="Date" MinWidth="120px">
+                        <Template>
+                            @{
+                                var date = (context as SaleOrderDto)!.OrderDate!.Value.ToString("g");
+                                <div>@date</div>
+                            }
+                        </Template>
+                    </GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.TaxPrice) HeaderText="Prix TVA" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.PriceExcludingTax) HeaderText="Prix HT" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.PriceIncludingTax) HeaderText="Prix TTC" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.DiscountPrice) HeaderText="Prix remise" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.NetPrice) HeaderText="Prix ​​net" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(SaleOrderDto.Status) HeaderText="Statut" MinWidth="120px"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+<ToastComponent @ref=Toast></ToastComponent>

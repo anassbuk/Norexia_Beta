@@ -1,0 +1,40 @@
+﻿
+::deep .btn-edit-images {
+    position: absolute;
+    z-index: 100000;
+    right: 0;
+    border-radius: 50%;
+    margin: 3px;
+    display: none;
+}
+
+::deep .btn-edit-images-icon {
+    padding: 0;
+}
+
+::deep .e-carousel {
+    max-width: 160px;
+    max-height: 160px;
+    float: right;
+}
+
+    ::deep .e-carousel:hover .btn-edit-images {
+        display: block
+    }
+
+/*.e-carousel .e-carousel-items {
+                border: 1px solid #C9CCD2;
+            }*/
+.switch-control {
+    display: flex;
+    align-items: center;
+}
+
+    .switch-control label {
+        -webkit-tap-highlight-color: transparent;
+        cursor: pointer;
+        user-select: none;
+        font-weight: 400;
+        font-size: 13px;
+        margin: 0 1em 0 .5em;
+    }

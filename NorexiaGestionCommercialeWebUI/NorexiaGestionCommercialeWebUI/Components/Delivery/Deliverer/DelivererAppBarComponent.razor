@@ -1,0 +1,40 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.SplitButtons
+@using Syncfusion.Blazor.Navigations
+
+<div>
+    <SfAppBar ColorMode="AppBarColor.Light">
+        <SfTooltip Target="#btn-save" Content="Sauvegarder">
+            <SfButton ID="btn-save" CssClass="e-inherit home e-appbar-menu e-light" IconCss="e-icons e-save"></SfButton>
+        </SfTooltip>
+        <SfTooltip Target="#btn-refresh" Content="Annuler les modifications">
+            <SfButton id="btn-refresh" CssClass="e-inherit home e-appbar-menu e-light" IconCss="e-icons e-refresh" type="button"></SfButton>
+        </SfTooltip>
+
+        <AppBarSpacer></AppBarSpacer>
+
+        <SfMenu CssClass="e-inherit" TValue="MenuItem">
+            <MenuItems>
+                <MenuItem Text="Action">
+                    <MenuItems>
+                        <MenuItem Text="Action 1"></MenuItem>
+                        <MenuItem Text="Action 2"></MenuItem>
+                        <MenuItem Text="Action 3"></MenuItem>
+                    </MenuItems>
+                </MenuItem>
+            </MenuItems>
+        </SfMenu>
+
+        <SfButton CssClass="ms-2" Content="Nouveau" type="button"></SfButton>
+    </SfAppBar>
+    <SfAppBar ColorMode="AppBarColor.Light" CssClass="breadcrumb-bar">
+        <SfBreadcrumb>
+            <BreadcrumbItems>
+                <BreadcrumbItem IconCss="e-icons e-home" Url="/" />
+                <BreadcrumbItem Text="Livreurs" Url="/Deliverers" />
+                <BreadcrumbItem Text="Nouveau" />
+            </BreadcrumbItems>
+        </SfBreadcrumb>
+    </SfAppBar>
+</div>

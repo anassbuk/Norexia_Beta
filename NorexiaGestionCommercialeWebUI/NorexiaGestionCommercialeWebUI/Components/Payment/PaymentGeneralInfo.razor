@@ -1,0 +1,150 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Grids
+
+<div class="row">
+    <div class="col-4 mt-1 pt-1">
+        <SfTextBox @bind-Value=PaymentCommand!.Reference Placeholder='N° Règlement' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfDatePicker @bind-Value=PaymentCommand!.EntryDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto">
+        </SfDatePicker>
+        <ValidationMessage For="@(() => PaymentCommand!.EntryDate)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfTextBox @bind-Value=PaymentCommand!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.Status)"></ValidationMessage>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=PaymentCommand!.PaymentOrigin TValue="PaymentOrigin?" TItem=DropDownPaymentOrigin Placeholder="Origine" DataSource="ddPaymentOrigins" FloatLabelType="FloatLabelType.Auto" Enabled=!IsEdit>
+            <DropDownListFieldSettings Value="PaymentOrigin" Text="DisplayName"></DropDownListFieldSettings>
+            <DropDownListEvents ValueChange="PaymentOriginChanged" TValue="PaymentOrigin?" TItem="DropDownPaymentOrigin"></DropDownListEvents>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => PaymentCommand!.PaymentOrigin)"></ValidationMessage>
+    </div>
+    @if (PaymentCommand!.PaymentOrigin == PaymentOrigin.Invoice)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=invoiceSearchTerm Placeholder="Référence facture" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-invoice" Content="Rechercher facture">
+                        <SfButton id="btn-search-invoice" IconCss="e-icons e-search" OnClick="SearchInvoice" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-invoice" Content="Ajouter facture">
+                        <SfButton id="btn-add-invoice" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => PaymentCommand!.InvoiceId)"></ValidationMessage>
+            </div>
+        </div>
+    }
+    else if (PaymentCommand!.PaymentOrigin == PaymentOrigin.SaleOrder)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=saleSearchTerm Placeholder="Référence commande de vente" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-sale" Content="Rechercher commande de vente">
+                        <SfButton id="btn-search-sale" IconCss="e-icons e-search" OnClick="SearchSaleOrder" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-sale" Content="Ajouter commande de vente">
+                        <SfButton id="btn-add-sale" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => PaymentCommand!.SaleOrderId)"></ValidationMessage>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="row">
+    <div class="col-4 mt-1 pt-1">
+        <SfDatePicker @bind-Value=PaymentCommand!.DueDate Placeholder="Date d'échéance" FloatLabelType="FloatLabelType.Auto">
+        </SfDatePicker>
+        <ValidationMessage For="@(() => PaymentCommand!.DueDate)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=PaymentCommand!.AmountToBePaid TValue="double?" Min=0 Placeholder='Montant à régler' FloatLabelType="FloatLabelType.Auto">
+            <NumericTextBoxEvents TValue="double?" ValueChange="@AmountToBePaidChange"></NumericTextBoxEvents>
+        </SfNumericTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.AmountToBePaid)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=amountToBePaidPercentage TValue="double?" Min=0 Max=1 Step=0.01 Format="p2" Placeholder='En pourcentage' FloatLabelType="FloatLabelType.Auto">
+            <NumericTextBoxEvents TValue="double?" ValueChange="@AmountToBePaidPercentageChange"></NumericTextBoxEvents>
+        </SfNumericTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.AmountToBePaidPercentage)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=SelectedPaymentMeanId TValue="Guid?" TItem=PaymentMeanDto Placeholder="Moyen de paiement" DataSource="PaymentMeans" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+            <DropDownListEvents OnValueSelect="OnPaymentMeanChanged" TValue="Guid?" TItem=PaymentMeanDto></DropDownListEvents>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => PaymentCommand!.PaymentMeanId)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfNumericTextBox @bind-Value=PaymentCommand!.AmountPaid TValue="double?" Min=0 Placeholder='Montant' FloatLabelType="FloatLabelType.Auto">
+        </SfNumericTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.AmountPaid)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfTextBox @bind-Value=PaymentCommand!.OperationNumber Placeholder='N° opération' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.OperationNumber)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfDatePicker @bind-Value=PaymentCommand!.OperationDate Placeholder="Date d’opération" FloatLabelType="FloatLabelType.Auto">
+        </SfDatePicker>
+        <ValidationMessage For="@(() => PaymentCommand!.OperationDate)"></ValidationMessage>
+    </div>
+
+    <div class="col-4 mt-1 pt-1">
+        <SfTextBox @bind-Value=PaymentCommand!.Bank Placeholder='Banque' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PaymentCommand!.Bank)"></ValidationMessage>
+    </div>
+
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

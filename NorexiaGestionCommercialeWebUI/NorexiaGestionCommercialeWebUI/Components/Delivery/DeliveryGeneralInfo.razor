@@ -1,0 +1,180 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+@using Syncfusion.Blazor.Grids
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=DeliveryCommand!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => DeliveryCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=DeliveryCommand!.EntryDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => DeliveryCommand!.EntryDate)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=DeliveryCommand!.DeliveryOrigin TValue="DeliveryOrigin?" TItem=DropDownDeliveryOrigin Placeholder="Origine" DataSource="ddDeliveryOrigins" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="DeliveryOrigin" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => DeliveryCommand!.DeliveryOrigin)"></ValidationMessage>
+    </div>
+
+    @if (DeliveryCommand!.DeliveryOrigin == DeliveryOrigin.DirectCreation)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <SfTextBox @bind-Value=DeliveryCommand!.Situation Placeholder='Situation' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            <ValidationMessage For="@(() => DeliveryCommand!.Situation)"></ValidationMessage>
+        </div>
+    }
+
+    @if (DeliveryCommand!.DeliveryOrigin == DeliveryOrigin.SaleOrder)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=saleSearchTerm Placeholder="Référence commande de vente" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-sale" Content="Rechercher commande de vente">
+                        <SfButton id="btn-search-sale" IconCss="e-icons e-search" OnClick="SearchSaleOrder" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-sale" Content="Ajouter commande de vente">
+                        <SfButton id="btn-add-sale" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => DeliveryCommand!.SaleOrderId)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="col-6 mt-1 pt-1"></div>
+    }
+    else if (DeliveryCommand!.DeliveryOrigin == DeliveryOrigin.Facture)
+    {
+        <div class="col-6 mt-1 pt-1">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 px-1">
+                    <SfTextBox CssClass="flex-grow-1" @bind-Value=invoiceSearchTerm Placeholder="Référence facture" FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+                </div>
+                <div class="px-1">
+                    <SfTooltip Target="#btn-search-invoice" Content="Rechercher facture">
+                        <SfButton id="btn-search-invoice" IconCss="e-icons e-search" OnClick="SearchInvoice" type="button"></SfButton>
+                    </SfTooltip>
+                </div>
+
+                <div class="px-1">
+                    <SfTooltip CssClass="g-1" Target="#btn-add-invoice" Content="Ajouter facture">
+                        <SfButton id="btn-add-invoice" IconCss="e-icons e-plus"></SfButton>
+                    </SfTooltip>
+                </div>
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => DeliveryCommand!.InvoiceId)"></ValidationMessage>
+            </div>
+        </div>
+        <div class="col-6 mt-1 pt-1"></div>
+    }
+
+    @if (DeliveryCommand!.DeliveryOrigin != null)
+    {
+        bool isCustomerEnabled = DeliveryCommand!.DeliveryOrigin == DeliveryOrigin.SaleOrder || DeliveryCommand!.DeliveryOrigin == DeliveryOrigin.Facture ? false : true;
+        <div class="col-6 mt-1 pt-1">
+            <div class="px-1">
+                <SfCheckBox Label="Client passagé" @bind-Checked="isPassing"></SfCheckBox>
+            </div>
+            <div class="d-flex align-items-center">
+                @if (!isPassing)
+                {
+                    <div class="flex-grow-1 px-1">
+                        <SfTextBox CssClass="flex-grow-1" @bind-Value=customerSearchTerm Placeholder='Client' FloatLabelType="FloatLabelType.Auto" Enabled=isCustomerEnabled></SfTextBox>
+                    </div>
+                    <div class="px-1">
+                        <SfTooltip Target="#btn-search-client" Content="Rechercher client">
+                            <SfButton id="btn-search-client" IconCss="e-icons e-search" OnClick="SearchCustomer" type="button" Disabled=!isCustomerEnabled></SfButton>
+                        </SfTooltip>
+                    </div>
+
+                    <div class="px-1">
+                        <SfTooltip CssClass="g-1" Target="#btn-add-client" Content="Ajouter client">
+                            <SfButton id="btn-add-client" IconCss="e-icons e-plus" Disabled=!isCustomerEnabled></SfButton>
+                        </SfTooltip>
+                    </div>
+                }
+            </div>
+
+            <div>
+                <ValidationMessage For="@(() => DeliveryCommand!.CustomerId)"></ValidationMessage>
+            </div>
+        </div>
+    }
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=DeliveryCommand!.Type TValue="StockRecordType?" TItem=DropDownStockRecordType Placeholder="Type" DataSource="ddStockRecordType" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="Type" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => DeliveryCommand!.Type)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=DeliveryCommand!.Status Placeholder='Statut' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => DeliveryCommand!.Status)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=DeliveryCommand!.CreatedBy Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => DeliveryCommand!.CreatedBy)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=DeliveryCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => DeliveryCommand!.Note)"></ValidationMessage>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>
+
+<SfDialog Width="768px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsSaleLinesDialogVisible">
+    <DialogTemplates>
+        <Header> Lignes de commande </Header>
+        <Content>
+            <SfGrid @ref=SaleLinesGrid DataSource="@SaleLines" AllowSelection="true" EnableVirtualization="true" EnableVirtualMaskRow="true" EnableHover="false">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="Syncfusion.Blazor.Grids.SelectionType.Single"></GridSelectionSettings>
+                <GridEditSettings AllowEditing="true"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60"></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.Reference) HeaderText="Référence" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.ShortDesignation) HeaderText="Désignation" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.ExpectedQty) HeaderText="Quantité prévue" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.UnitPrice) HeaderText="Prix ​​unitaire HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.TotalPriceExcludingTax) HeaderText="Total HT" Format="N2" AllowEditing=false></GridColumn>
+                    <GridColumn Field=@nameof(DeliveryLineDto.TotalPriceIncludingTax) HeaderText="Total TTC" Format="N2" AllowEditing=false></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@SaleLinesDialogOkClick" />
+    </DialogButtons>
+</SfDialog>

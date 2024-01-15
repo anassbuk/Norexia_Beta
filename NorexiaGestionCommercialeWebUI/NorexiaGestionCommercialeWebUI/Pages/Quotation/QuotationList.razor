@@ -1,0 +1,41 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Grids
+@using System;
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components
+
+@page "/Quotations"
+
+<div class="control-section" style="height:100%">
+    <div class="content-wrapper">
+        <div id="container">
+            <SfGrid @ref=QuotationsGrid Height="100%" DataSource="@Quotations" AllowResizing=true AllowSelection="true" AllowSorting="true" AllowFiltering="true" EnableVirtualization="true" EnableVirtualMaskRow="true" AllowPaging="true" EnableHover="false" Toolbar="Toolbaritems">
+                <GridFilterSettings Type="Syncfusion.Blazor.Grids.FilterType.Menu"></GridFilterSettings>
+                <GridPageSettings PageSize="40"></GridPageSettings>
+                <GridSelectionSettings CheckboxOnly="true" Type="SelectionType.Single"></GridSelectionSettings>
+                <GridEvents OnActionBegin="OnActionBegin" TValue="QuotationDto"></GridEvents>
+                <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" ShowDeleteConfirmDialog="true" Mode="EditMode.Dialog"></GridEditSettings>
+                <GridColumns>
+                    <GridColumn Type="ColumnType.CheckBox" AllowFiltering="false" AllowSorting="false" Width="60" AllowResizing=false></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.Reference) HeaderText="Référence" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.Version) HeaderText="N° version" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.ValidityDuretion) HeaderText="Durée de validité " MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.Responsable) HeaderText="Responsable" MinWidth="120px"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.CustomerId) Visible=false></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.QuotationDate) HeaderText="Date" MinWidth="120px" Format="g">
+                        
+                    </GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.TaxPrice) HeaderText="Prix TVA" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.PriceExcludingTax) HeaderText="Prix HT" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.PriceIncludingTax) HeaderText="Prix TTC" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.DiscountPrice) HeaderText="Prix remise" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.NetPrice) HeaderText="Prix ​​net" MinWidth="120px" Format="N2"></GridColumn>
+                    <GridColumn Field=@nameof(QuotationDto.Status) HeaderText="Statut" MinWidth="120px"></GridColumn>
+                </GridColumns>
+            </SfGrid>
+        </div>
+    </div>
+</div>
+
+<ToastComponent @ref=Toast></ToastComponent>

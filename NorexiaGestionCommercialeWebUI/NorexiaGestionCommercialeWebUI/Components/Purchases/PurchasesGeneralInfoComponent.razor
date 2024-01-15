@@ -1,0 +1,59 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=PurchaseCommand!.Reference Placeholder='Référence' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PurchaseCommand!.Reference)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=PurchaseCommand!.OrderDate Placeholder='Date' FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => PurchaseCommand!.OrderDate)"></ValidationMessage>
+    </div>
+    <div class="col-12 mt-1 pt-1">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1 px-1">
+                <SfTextBox CssClass="flex-grow-1" @bind-Value=providerSearchTerm Placeholder='Référence | Raison sociale | Nom' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            </div>
+            <div class="px-1">
+                <SfTooltip Target="#btn-search-provider" Content="Rechercher fournisseur">
+                    <SfButton id="btn-search-provider" IconCss="e-icons e-search" OnClick="SearchProvider" type="button"></SfButton>
+                </SfTooltip>
+            </div>
+
+            <div class="px-1">
+                <SfTooltip CssClass="g-1" Target="#btn-add-provider" Content="Ajouter fournisseur">
+                    <SfButton id="btn-add-provider" IconCss="e-icons e-plus" type="button"></SfButton>
+                </SfTooltip>
+            </div>
+
+            <div class="px-1">
+                <SfTooltip CssClass="g-1" Target="#btn-edit-provider" Content="Editer fournisseur">
+                    <SfButton id="btn-edit-provider" IconCss="e-icons e-edit" type="button"></SfButton>
+                </SfTooltip>
+            </div>
+        </div>
+
+        <div>
+            <ValidationMessage For="@(() => PurchaseCommand!.ProviderId)"></ValidationMessage>
+        </div>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

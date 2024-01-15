@@ -1,0 +1,125 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+
+<EditForm EditContext="EC">
+    <FluentValidator TValidator="SellingPriceValidator" />
+    <div class="row">
+        <div class="col-12 form-group mt-2 pt-1">
+            <div class="switch-control">
+                <label>Prix d'achat (PMP)</label>
+                <SfSwitch ValueChange=@OnUsePMPChanged TChecked="bool?" CssClass="e-small" @bind-Checked="UsePMP"></SfSwitch>
+            </div>
+        </div>
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=DefaultSellingPrice!.PurchasePrice TValue=double? FloatLabelType=FloatLabelType.Auto Placeholder="Prix d'achat" Enabled=@(!(UsePMP == true))>
+                <NumericTextBoxEvents ValueChange="PurchasePriceValueChanged" TValue="double?"></NumericTextBoxEvents>
+            </SfNumericTextBox>
+        </div>
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=DefaultSellingPrice.Price TValue="double?" FloatLabelType=FloatLabelType.Auto Placeholder="Prix de vente">
+                <NumericTextBoxEvents ValueChange="PriceValueChanged" TValue="double?"></NumericTextBoxEvents>
+            </SfNumericTextBox>
+        </div>
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=DefaultSellingPrice.Margin TValue="double?" FloatLabelType=FloatLabelType.Auto Placeholder="Marge">
+                <NumericTextBoxEvents ValueChange="MarginValueChanged" TValue="double?"></NumericTextBoxEvents>
+            </SfNumericTextBox>
+        </div>
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=DefaultSellingPrice.Vat Min=0 Max=1 Step=0.01 Format="p2" Placeholder="TVA" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+        </div>
+        <div class="form-group col-6 mt-1 pt-1">
+            <SfNumericTextBox @bind-Value=DefaultSellingPrice.Discount Min=0 Max=1 Step=0.01 Format="p2" Placeholder="Remise" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+        </div>
+    </div>
+</EditForm>
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Prix de vente</h2>
+        <SfGrid DataSource="@SalePrices" AllowResizing=true Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+            <GridEvents OnActionComplete="OnSalePriceActionComplete" OnActionBegin="OnSalePriceActionBegin" TValue="SellingPrice"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                <Template>
+                    @{
+                        var DialogSellingPrice = (context as SellingPrice);
+                        <FluentValidator TValidator="SellingPriceValidator" />
+                        <div style="min-width:300px">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <div class="switch-control">
+                                        <label>Prix d'achat (PMP)</label>
+                                        <SfSwitch ValueChange="args => OnDialogUsePMPChanged(args, context)" TChecked="bool?" CssClass="e-small" @bind-Checked="UsePMPDialog"></SfSwitch>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <SfNumericTextBox @bind-Value=DialogSellingPrice!.PurchasePrice TValue=double? FloatLabelType=FloatLabelType.Auto Placeholder="Prix d'achat" Enabled=@(!(UsePMPDialog == true))>
+                                        <NumericTextBoxEvents ValueChange="(args) => DialogPurchasePriceValueChanged(args, context)" TValue="double?"></NumericTextBoxEvents>
+                                    </SfNumericTextBox>
+                                    <ValidationMessage For="@(()=>DialogSellingPrice.PurchasePrice)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfDropDownList @bind-Value=DialogSellingPrice!.PriceGroupId FloatLabelType=FloatLabelType.Auto TItem="PriceGroupDto" TValue="Guid?" DataSource="@PriceGroups" Placeholder="Sélectionner le groupe de prix">
+                                        <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                                        <DropDownListEvents OnValueSelect="OnPriceGroupChanged" TValue="Guid?" TItem="PriceGroupDto"></DropDownListEvents>
+                                    </SfDropDownList>
+                                    <ValidationMessage For="@(()=>DialogSellingPrice.PriceGroupId)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfNumericTextBox @bind-Value=DialogSellingPrice.Price TValue="double?" FloatLabelType=FloatLabelType.Auto Placeholder="Prix">
+                                        <NumericTextBoxEvents ValueChange="(args) =>DialogPriceValueChanged(args, context)" TValue="double?"></NumericTextBoxEvents>
+                                    </SfNumericTextBox>
+                                    <ValidationMessage For="@(()=>DialogSellingPrice.Price)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfNumericTextBox @bind-Value=DialogSellingPrice.Margin TValue="double?" FloatLabelType=FloatLabelType.Auto Placeholder="Marge">
+                                        <NumericTextBoxEvents ValueChange="(args) =>DialogMarginValueChanged(args, context)" TValue="double?"></NumericTextBoxEvents>
+                                    </SfNumericTextBox>
+                                    <ValidationMessage For="@(()=>DialogSellingPrice.Margin)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfNumericTextBox @bind-Value=DialogSellingPrice.Vat Min=0 Max=1 Step=0.01 Format="p2" Placeholder="TVA" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+                                    <ValidationMessage For="@(()=>DialogSellingPrice.Vat)"></ValidationMessage>
+                                </div>
+                                <div class="form-group">
+                                    <SfNumericTextBox @bind-Value=DialogSellingPrice.Discount Min=0 Max=1 Step=0.01 Format="p2" Placeholder="Remise" FloatLabelType="@FloatLabelType.Auto"></SfNumericTextBox>
+                                </div>
+
+                                <div class="validation-message">@DialogValidationMessage</div>
+                            </div>
+                        </div>
+                    }
+                </Template>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(SellingPrice.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.PriceGroupId) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.PriceGroupName) HeaderText="Groupe de prix" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.Price) HeaderText="Prix" Format="N2" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.Margin) HeaderText="Marge" Format="N2" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.Vat) HeaderText="TVA (%)" MinWidth="120px">
+                    <Template>
+                        @{
+                            var val = (context as SellingPrice)!.Vat ?? 0;
+                            <div>@val.ToString("P2")</div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field=@nameof(SellingPrice.Discount) HeaderText="Remise (%)" MinWidth="120px">
+                    <Template>
+                        @{
+                            var val = (context as SellingPrice)!.Discount ?? 0;
+                            <div>@val.ToString("P2")</div>
+                        }
+                    </Template>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

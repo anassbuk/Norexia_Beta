@@ -1,0 +1,126 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Purchase;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+        <div class="d-flex align-items-center justify-content-center flex-column border rounded bg-value-card h-100">
+            <div class="m-2 text-center">
+                <span>Total HT : <span>@priceExcludingTax.ToString("N2")</span></span>
+            </div>
+            <div class="m-2 text-center">
+                <span>Total TVA : <span>@taxPrice.ToString("N2")</span></span>
+            </div>
+            <div class="m-2 text-center">
+                <span>Total TTC : <span>@priceIncludingTax.ToString("N2")</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <div class="d-flex align-items-center justify-content-center h-100 border rounded p-2 text-center bg-value-card">
+            <div class="m-2 fw-bold">
+                <span>Net à payer : <span>@netPrice.ToString("N2")</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value="PurchaseCommand!.Note" Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => PurchaseCommand!.Note)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1 d-flex align-items-center">
+        <div class="flex-grow-1 px-1">
+            <SfTextBox CssClass="flex-grow-1" @bind-Value=productSearchTerm Placeholder='Référence | Code à barre' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        </div>
+        <div class="px-1">
+            <SfTooltip Target="#btn-search-product" Content="Rechercher produit">
+                <SfButton id="btn-search-product" IconCss="e-icons e-search" OnClick="SearchProduct" type="button"></SfButton>
+            </SfTooltip>
+        </div>
+    </div>
+    <div class="col-6 mt-1 pt-1 d-flex align-items-end justify-content-end">
+        <div class="total">
+            <span class="border rounded bg-value-card px-1">Nombre de produits: <span>@nbrProduct</span></span>
+            <span class="border rounded bg-value-card px-1">Nombre de pièces: <span>@nbrPieces</span></span>
+        </div>
+    </div>
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Lignes ventes</h2>
+        <SfGrid @ref=PurchaseLinesGrid AllowResizing=true DataSource="@PurchaseCommand!.PurchaseOrderLines" Toolbar="@(new List<string>() { "Edit", "Delete","Update","Cancel"})">
+            <GridEvents OnActionComplete="OnActionComplete" TValue="PurchaseOrderLineDto"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal">
+                <Validator>
+                    <FluentValidator TValidator="PurchaseOrderLineDtoValidator"></FluentValidator>
+                </Validator>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.Id) IsPrimaryKey="true" Visible=false AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.Reference) HeaderText="Référence" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.ShortDesignation) HeaderText="Designation" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.Price) HeaderText="Prix d'achat" MinWidth="120px" Format="N2" AllowEditing=false>
+                    <EditTemplate>
+                        @{
+                            var line = (context as PurchaseOrderLineDto);
+                            <SfNumericTextBox @bind-Value=line!.Price Placeholder="Prix d'achat">
+                                <NumericTextBoxEvents ValueChange="(args) =>LinePriceChanged(args, context)" TValue="double?"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+
+                            <ValidationMessage For="@(() => line.Price)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.Qty) HeaderText="Qté" MinWidth="120px">
+                    <EditTemplate>
+                        @{
+                            var line = (context as PurchaseOrderLineDto);
+                            <SfNumericTextBox @bind-Value=line!.Qty Placeholder='Qte' Min="0">
+                                <NumericTextBoxEvents ValueChange="(args) =>LineQtyChanged(args, context)" TValue="int?"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+
+                            <ValidationMessage For="@(() => line.Qty)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.Vat) HeaderText="TVA (%)" MinWidth="120px">
+                    <EditTemplate>
+                        @{
+                            var line = (context as PurchaseOrderLineDto);
+                            double? currentVat = ((double?)line!.Vat ?? 0) / 100;
+                            <SfNumericTextBox @bind-Value=currentVat TValue="double?" Min=0 Max=1 Step=0.01 Format="p2" Placeholder='TVA (%)' FloatLabelType="FloatLabelType.Auto">
+                                <NumericTextBoxEvents TValue="double?" ValueChange="(args) =>LineVatChanged(args, context)"></NumericTextBoxEvents>
+                            </SfNumericTextBox>
+
+                            <ValidationMessage For="@(() => line.Qty)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                    <Template>
+                        @{
+                            var val = (((double?)(context as PurchaseOrderLineDto)!.Vat ?? 0) / 100);
+                            <div>@val.ToString("P2")</div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.TotalPriceExcludingTax) HeaderText="Montant HT" Format="N2" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.TotalVATPrice) HeaderText="Montant TVA" MinWidth="120px" Format="N2" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(PurchaseOrderLineDto.TotalPriceIncludingTax) HeaderText="Montant TTC" Format="N2" MinWidth="120px" AllowEditing=false></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

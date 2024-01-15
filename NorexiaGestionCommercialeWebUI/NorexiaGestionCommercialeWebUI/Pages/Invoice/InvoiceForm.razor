@@ -1,0 +1,56 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Invoice;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Cards
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Inputs
+@using NorexiaGestionCommercialeWebUI.Components
+@using Syncfusion.Blazor.Notifications
+@using NorexiaGestionCommercialeWebUI.Components.Invoice
+
+@page "/Invoices/New"
+
+<EditForm EditContext="EC" OnSubmit="Save">
+    <FluentValidator TValidator="InvoiceCommandValidator" />
+    <InvoiceAppBarComponent></InvoiceAppBarComponent>
+    <div class="control-section">
+        <div class="content-wrapper">
+            <div class="container-fluid mt-2">
+                <SfCard>
+                    <CardContent>
+                        <div>
+                            <ValidationSummary></ValidationSummary>
+                        </div>
+                        <InvoiceGeneralInfo @bind-InvoiceCommand=InvoiceCommand EC="EC"></InvoiceGeneralInfo>
+                    </CardContent>
+                    <CardContent EnableSeparator="true"></CardContent>
+
+                    <CardContent>
+                        <SfTab LoadOn="ContentLoad.Init" CssClass="default-tab e-fill">
+                            <TabAnimationSettings>
+                                <TabAnimationPrevious Effect="AnimationEffect.None"></TabAnimationPrevious>
+                                <TabAnimationNext Effect="@AnimationEffect.None"></TabAnimationNext>
+                            </TabAnimationSettings>
+                            <TabItems>
+                                <TabItem>
+                                    <HeaderTemplate>lignes de facture</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <InvoiceLinesComponent @ref=InvoiceLinesComponent @bind-InvoiceCommand=InvoiceCommand PriceGroups="PriceGroups" DefaultPriceGroupId="DefaultPriceGroupId" Currencies="Currencies"></InvoiceLinesComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                                <TabItem>
+                                    <HeaderTemplate>Paiement</HeaderTemplate>
+                                    <ContentTemplate>
+                                        <InvoicePaymentInfoComponent PaymentMeans=PaymentMeans OnFillDepositInvoiceData="FillDepositInvoiceData" @bind-InvoiceCommand=InvoiceCommand DefaultPaymentTerms="DefaultPaymentTerms"></InvoicePaymentInfoComponent>
+                                    </ContentTemplate>
+                                </TabItem>
+                            </TabItems>
+                        </SfTab>
+                    </CardContent>
+                </SfCard>
+            </div>
+        </div>
+    </div>
+</EditForm>
+<ToastComponent @ref=Toast></ToastComponent>

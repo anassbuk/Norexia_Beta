@@ -1,0 +1,15 @@
+﻿@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.SplitButtons
+
+<div>
+    <SfAppBar ColorMode="AppBarColor.Light">
+        <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Général" OnClick="@(e=>OnSelect("/GeneralSettings"))"></SfButton>
+        <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Produit" OnClick="@(e=>OnSelect("/ProductSettings"))"></SfButton>
+        <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Ventes" OnClick="@(e=>OnSelect("/SalesSettings"))"></SfButton>
+        <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Client" OnClick="@(e=>OnSelect("/ClientSettings"))"></SfButton>
+        <SfButton CssClass="e-inherit home e-appbar-menu e-light" Content="Fournisseur" OnClick="@(e=>OnSelect("/ProviderSettings"))"></SfButton>
+
+        <AppBarSpacer></AppBarSpacer>
+        <SfButton CssClass="ms-2" Content="Login"></SfButton>
+    </SfAppBar>
+</div>

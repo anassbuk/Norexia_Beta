@@ -1,0 +1,68 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.StockEntry;
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Popups
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=StockEntryCommand!.Note Multiline=true Placeholder='Note' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => StockEntryCommand!.Note)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1 d-flex align-items-center">
+        <div class="flex-grow-1 px-1">
+            <SfTextBox CssClass="flex-grow-1" @bind-Value=productSearchTerm Placeholder='Référence produit' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        </div>
+        <div class="px-1">
+            <SfTooltip Target="#btn-search-product" Content="Rechercher produit">
+                <SfButton id="btn-search-product" IconCss="e-icons e-search" OnClick="SearchProduct" type="button"></SfButton>
+            </SfTooltip>
+        </div>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=StockEntryCommand!.Type TValue="StockRecordType?" TItem=DropDownStockRecordType Placeholder="Type" DataSource="ddStockRecordType" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="Type" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => StockEntryCommand!.Type)"></ValidationMessage>
+    </div>
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Lignes bon de réception</h2>
+        <SfGrid @ref=StockLinesGrid AllowResizing=true DataSource="@StockEntryCommand!.StockEntryLines" Toolbar="@(new List<string>() { "Edit","Delete","Update","Cancel"})">
+            <GridEvents OnActionComplete="OnActionComplete" TValue="StockEntryLineDto"></GridEvents>
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true">
+                <Validator>
+                    <FluentValidator TValidator="StockEntryLineDtoValidator"></FluentValidator>
+                </Validator>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(StockEntryLineDto.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(StockEntryLineDto.Reference) HeaderText="Référence" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(StockEntryLineDto.ShortDesignation) HeaderText="Désignation" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(StockEntryLineDto.ExpectedQty) HeaderText="Quantité prévue" MinWidth="120px" AllowEditing=false></GridColumn>
+                <GridColumn Field=@nameof(StockEntryLineDto.Qty) HeaderText="Quantité reçue" MinWidth="120px">
+                    <EditTemplate>
+                        @{
+                            var line = (context as StockEntryLineDto);
+                            <SfNumericTextBox @bind-Value=line!.Qty Placeholder='Quantité' Min="0"></SfNumericTextBox>
+                            <ValidationMessage For="@(() => line.Qty)"></ValidationMessage>
+                        }
+                    </EditTemplate>
+                </GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>

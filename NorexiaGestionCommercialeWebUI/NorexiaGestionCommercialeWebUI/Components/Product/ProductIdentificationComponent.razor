@@ -1,0 +1,73 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using NorexiaGestionCommercialeWebUI.Models
+@using NorexiaGestionCommercialeWebUI.Models.Product;
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Inputs
+
+<div class="row">
+    <div class="col-12 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProductCommand!.LongDesignation Placeholder='Désignation longue' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+        <ValidationMessage For="@(() => ProductCommand!.LongDesignation)"></ValidationMessage>
+    </div>
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=ProductCommand!.Type TValue="ProductType?" TItem=DropDownProductType Placeholder="Type" DataSource="ddProductTypes" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="ProductType" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => ProductCommand!.Type)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox Placeholder='Responsable' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTextBox @bind-Value=ProductCommand!.Barcode Placeholder='Code à barre' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfMultiSelect @ref=SfMultiSelect @bind-Value=SelectedAvailabilities TValue="string[]" TItem="ProductAvailabilityDto" Placeholder="Canaux de vente" Mode="@VisualMode.Box" DataSource="@ProductAvailablities" FloatLabelType="FloatLabelType.Auto" ShowDropDownIcon=false>
+            <MultiSelectFieldSettings Value="Name" Text="Name"></MultiSelectFieldSettings>
+            <MultiSelectEvents OnValueRemove=AvailabilityValueRemovehandler OnValueSelect=AvailabilityChipSelectedhandler TValue="string[]" TItem="ProductAvailabilityDto"></MultiSelectEvents>
+        </SfMultiSelect>
+
+        <ValidationMessage For="@(() => ProductCommand!.ProductAvailabilities)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <h2 class="section-header">Notes interne</h2>
+        <SfGrid DataSource="@ProductNotes" AllowResizing=true Toolbar="@(new List<string>() { "Add", "Edit", "Delete"})">
+            <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Dialog">
+                <Template>
+                    @{
+                        var note = (context as ProductNote);
+                        <div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <SfTextBox @bind-Value=note!.Note FloatLabelType=FloatLabelType.Auto Placeholder="Note"></SfTextBox>
+
+                                    <ValidationMessage For="@(()=>note.Note)"></ValidationMessage>
+                                </div>
+                            </div>
+                        </div>
+                        <FluentValidator TValidator="ProductNoteValidator"></FluentValidator>
+                    }
+                </Template>
+            </GridEditSettings>
+            <GridColumns>
+                <GridColumn Field=@nameof(ProductNote.Id) IsPrimaryKey="true" Visible=false></GridColumn>
+                <GridColumn Field=@nameof(ProductNote.IsNew) Visible=false></GridColumn>
+                <GridColumn Field=@nameof(ProductNote.Note) HeaderText="Note" MinWidth="120px"></GridColumn>
+                <GridColumn Field=@nameof(ProductNote.Created) HeaderText="Date" MinWidth="120px">
+                    <Template>
+                        @{
+                            var date = (context as ProductNote)!.Created.ToString("g");
+                            <div>@date</div>
+                        }
+                    </Template>
+                </GridColumn>
+                <GridColumn Field=@nameof(ProductNote.CreatedBy) HeaderText="Par" MinWidth="120px"></GridColumn>
+            </GridColumns>
+        </SfGrid>
+    </div>
+</div>

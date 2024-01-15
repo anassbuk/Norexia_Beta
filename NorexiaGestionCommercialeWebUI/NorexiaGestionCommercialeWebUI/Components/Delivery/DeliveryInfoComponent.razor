@@ -1,0 +1,80 @@
+﻿@using Norexia.Core.Facade.Client.Sdk;
+@using Syncfusion.Blazor.Inputs
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.Lists
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.DropDowns
+@using Syncfusion.Blazor.Calendars
+
+<div class="row">
+    <div class="col-6 mt-1 pt-1">
+
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1 px-1">
+                <SfTextBox CssClass="flex-grow-1" @bind-Value=delivererSearchTerm Placeholder='Livreur' FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+            </div>
+            <div class="px-1">
+                <SfTooltip Target="#btn-search-deliverer" Content="Rechercher Livreur">
+                    <SfButton id="btn-search-deliverer" IconCss="e-icons e-search" OnClick="SearchDeliverer" type="button"></SfButton>
+                </SfTooltip>
+            </div>
+
+            <div class="px-1">
+                <SfTooltip CssClass="g-1" Target="#btn-add-deliverer" Content="Ajouter Livreur">
+                    <SfButton id="btn-add-deliverer" IconCss="e-icons e-plus"></SfButton>
+                </SfTooltip>
+            </div>
+        </div>
+
+        <div>
+            <ValidationMessage For="@(() => DeliveryCommand!.DelivererId)"></ValidationMessage>
+        </div>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDropDownList @bind-Value=DeliveryCommand!.DeliveryMode TValue="DeliveryMode?" TItem=DropDownDeliveryMode Placeholder="Mode livraison" DataSource="ddDeliveryMode" FloatLabelType="FloatLabelType.Auto">
+            <DropDownListFieldSettings Value="DeliveryMode" Text="DisplayName"></DropDownListFieldSettings>
+        </SfDropDownList>
+        <ValidationMessage For="@(() => DeliveryCommand!.DeliveryMode)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=DeliveryCommand!.PlannedDate TValue="DateTimeOffset?" PlaceHolder="Date planifiée" FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => DeliveryCommand!.PlannedDate)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfDatePicker @bind-Value=DeliveryCommand!.DeliveryDate TValue="DateTimeOffset?" PlaceHolder="Date de livraison" FloatLabelType="FloatLabelType.Auto"></SfDatePicker>
+        <ValidationMessage For="@(() => DeliveryCommand!.DeliveryDate)"></ValidationMessage>
+    </div>
+
+    <div class="col-6 mt-1 pt-1">
+        <SfTimePicker @bind-Value=DeliveryCommand!.DeliveryTime TValue="DateTimeOffset?" PlaceHolder="Heure de livraison (A partir)" FloatLabelType="FloatLabelType.Auto"></SfTimePicker>
+        <ValidationMessage For="@(() => DeliveryCommand!.DeliveryTime)"></ValidationMessage>
+    </div>
+
+    <div class="col-12 mt-1 pt-1">
+        <label class="address-headertext">Adresse de livraison</label>
+        <div class="border rounded p-1 bg-value-card">
+            @if (DeliveryCustomerAddress != null)
+            {
+                <div class='e-list-content w-100'>@DeliveryCustomerAddress.StreetAdress</div>
+                <span class='e-list-content'>@DeliveryCustomerAddress.ZipCode,</span>
+                <span class='e-list-content'> @DeliveryCustomerAddress.City</span>
+            }
+        </div>
+    </div>
+</div>
+
+
+<SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsDialogVisible">
+    <DialogTemplates>
+        <Header> Info </Header>
+        <Content>
+            @DialogMessage
+        </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton Content="OK" IsPrimary="true" OnClick="@DialogOkClick" />
+    </DialogButtons>
+</SfDialog>
