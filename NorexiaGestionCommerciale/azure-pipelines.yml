@@ -1,0 +1,48 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+ branches:
+   include:
+     - release/*
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '7a3a2b2f-e17a-4764-90e9-658c1653b1ff'
+  imageApiRepository: 'norexia-GestionCommerciale-webapi'
+  containerRegistry: 'norexia.azurecr.io'
+  dockerfileApiPath: '**/Dockerfile'
+  dockerfileUIPath: '**/WebUI/Dockerfile'
+  
+  buildCounter: $[counter(variables['Build.sourceBranchName'], 0)]
+  tag: $(Build.sourceBranchName).$(buildCounter)
+
+stages:
+- stage: Build
+  displayName: Build and push stage $(tag)
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      name: Default
+      demands: Agent.Name -equals srvdocker
+    steps:
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'NorexiaGestionCommercialeWebUI'
+        Contents: '**/docker-compose.yml'
+        TargetFolder: 'norexiagcwebapi'
+    - task: Docker@2
+      displayName: Build and push an image (Norexia web api) to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageApiRepository)
+        dockerfile: $(dockerfileApiPath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest    

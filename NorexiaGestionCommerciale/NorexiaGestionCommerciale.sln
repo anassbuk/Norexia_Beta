@@ -1,0 +1,77 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BE", "BE", "{29BB1D12-C56A-444B-A2EC-21AB8BD0EE0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{8A49F914-1472-431C-B0BA-63D3970C1B25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norexia.Core.Domain", "src\BE\Services\Core\Norexia.Core.Domain\Norexia.Core.Domain.csproj", "{C9772721-1967-42C3-BDF1-7352FBAA3557}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norexia.Core.Infrastructure", "src\BE\services\Core\Norexia.Core.Infrastructure\Norexia.Core.Infrastructure.csproj", "{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norexia.Core.Application", "src\BE\Services\Core\Norexia.Core.Application\Norexia.Core.Application.csproj", "{B04E73B4-9846-43F3-A919-979574D43A4A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norexia.Core.WebApi", "src\BE\Services\Core\Norexia.Core.WebApi\Norexia.Core.WebApi.csproj", "{95324103-C25A-498D-91FF-ADE1FF65B323}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Norexia.Core.Facade.Sdk", "src\BE\Sdks\Norexia.Core.Sdk\Norexia.Core.Facade.Sdk.csproj", "{A6E793B5-6654-4275-92E0-1C003EE09315}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sdks", "Sdks", "{4AF7A7EF-3FAC-40A3-A3B1-844DFDB790C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED77A01E-2599-427B-8035-1971EA70EC1C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+		global.json = global.json
+		.nuget\NuGet.config = .nuget\NuGet.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9772721-1967-42C3-BDF1-7352FBAA3557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9772721-1967-42C3-BDF1-7352FBAA3557}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9772721-1967-42C3-BDF1-7352FBAA3557}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9772721-1967-42C3-BDF1-7352FBAA3557}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04E73B4-9846-43F3-A919-979574D43A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04E73B4-9846-43F3-A919-979574D43A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04E73B4-9846-43F3-A919-979574D43A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04E73B4-9846-43F3-A919-979574D43A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95324103-C25A-498D-91FF-ADE1FF65B323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95324103-C25A-498D-91FF-ADE1FF65B323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95324103-C25A-498D-91FF-ADE1FF65B323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95324103-C25A-498D-91FF-ADE1FF65B323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6E793B5-6654-4275-92E0-1C003EE09315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6E793B5-6654-4275-92E0-1C003EE09315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6E793B5-6654-4275-92E0-1C003EE09315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6E793B5-6654-4275-92E0-1C003EE09315}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A49F914-1472-431C-B0BA-63D3970C1B25} = {29BB1D12-C56A-444B-A2EC-21AB8BD0EE0E}
+		{6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20} = {8A49F914-1472-431C-B0BA-63D3970C1B25}
+		{C9772721-1967-42C3-BDF1-7352FBAA3557} = {6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20}
+		{0B9652FE-F018-4020-BE8F-D0D3FF4B3BFA} = {6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20}
+		{B04E73B4-9846-43F3-A919-979574D43A4A} = {6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20}
+		{95324103-C25A-498D-91FF-ADE1FF65B323} = {6DD86431-8F7B-4D1F-B4F2-A56B11FA3A20}
+		{A6E793B5-6654-4275-92E0-1C003EE09315} = {4AF7A7EF-3FAC-40A3-A3B1-844DFDB790C0}
+		{4AF7A7EF-3FAC-40A3-A3B1-844DFDB790C0} = {29BB1D12-C56A-444B-A2EC-21AB8BD0EE0E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E9405A1-C763-4EB7-9E04-99CED6456758}
+	EndGlobalSection
+EndGlobal
